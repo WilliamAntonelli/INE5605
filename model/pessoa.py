@@ -1,9 +1,17 @@
-class Pessoa:
+from util.enums import Genero
+from abc import ABC
+
+
+class Pessoa(ABC):
+
     def __init__(self, nome, profissao, idade, genero):
         self.__nome = nome
         self.__profissao = profissao
         self.__idade = idade
-        self.__genero = genero
+        self.__genero = None
+
+        self.genero = genero
+
 
     @property
     def nome(self):
@@ -35,7 +43,11 @@ class Pessoa:
 
     @genero.setter
     def genero(self, genero):
-        self.__genero = genero
+        if isinstance(genero, Genero):
+            self.__genero = genero
+        else:
+            raise Exception("Genero inválido, coloque um genero válido")
 
     def exibir_dados(self):
-        return f"Nome: {self.__nome} | Profissão: {self.__profissao} | Idade: {self.__idade} | Gênero: {self.__genero}"
+        return f"Nome: {self.__nome} | Profissão: {self.__profissao} | Idade: {self.__idade} | Gênero: {self.__genero.value}"
+
