@@ -1,10 +1,5 @@
-from model.ativo_financeiro import AtivoFinanceiro
-from model.despesa import Despesa
-from model.meta import Meta
-from model.usuario import Usuario
-from util.enums import TipoDespesa, CategoriaDespesa, TipoPagamento, Genero, Parentesco, ClasseAtivo, TipoAtivo
-from typing import Union
 
+from typing import Union
 from fastapi import FastAPI
 
 app = FastAPI()
