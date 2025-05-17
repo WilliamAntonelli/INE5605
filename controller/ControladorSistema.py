@@ -3,6 +3,7 @@
 from controller.ControladorCategoria import ControladorCategoria
 from controller.ControladorNotaFiscal import ControladorNotaFiscal
 from controller.ControladorMeta import ControladorMeta
+from controller.ControladorUsuario import ControladorUsuario
 from view.TelaSistema import TelaSistema
 
 class ControladorSistema:
@@ -11,9 +12,11 @@ class ControladorSistema:
         self.__controlador_categoria = ControladorCategoria()
         self.__controlador_nota_fiscal = ControladorNotaFiscal()
         self.__controlador_meta = ControladorMeta()
+        self.__controlador_usuario = ControladorUsuario()
         self.__tela_sistema = TelaSistema()
 
     def iniciar(self):
+        self.__controlador_usuario.cadastrar_usuario()
         self.abre_tela()
 
     def abre_tela(self):
