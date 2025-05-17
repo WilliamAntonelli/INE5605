@@ -4,11 +4,13 @@ from controller.ControladorCategoria import ControladorCategoria
 from controller.ControladorNotaFiscal import ControladorNotaFiscal
 from controller.ControladorMeta import ControladorMeta
 from controller.ControladorUsuario import ControladorUsuario
+from controller.ControladorFamiliar import ControladorFamiliar
 from view.TelaSistema import TelaSistema
 
 class ControladorSistema:
 
     def __init__(self):
+        self.__contralador_familiar = ControladorFamiliar()
         self.__controlador_categoria = ControladorCategoria()
         self.__controlador_nota_fiscal = ControladorNotaFiscal()
         self.__controlador_meta = ControladorMeta()
