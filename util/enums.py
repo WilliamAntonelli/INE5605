@@ -9,12 +9,6 @@ class TipoDespesa(Enum):
     VARIAVEL = "Variável"
     IMPREVISTOS = "Imprevistos"
 
-class CategoriaDespesa(Enum):
-    ALIMENTACAO = "Alimentação"
-    TRANSPORTE = "Transporte"
-    MORADIA = "Moradia"
-    OUTROS = "Outros"
-
 class TipoPagamento(Enum):
     CARTAO_CREDITO = "Cartão de cŕedito"
     CARTAO_DEBITO = "Cartão de débito"
