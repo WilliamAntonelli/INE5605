@@ -14,7 +14,7 @@ class TelaSistema:
         print("(4) Investimentos")
         print("(5) Tranferências")
         print("(6) Despesas")
-        print("(7) Cadastrar informações")
+        print("(7) Informações do usuário")
 
         opcao_menu = input()
         return opcao_menu

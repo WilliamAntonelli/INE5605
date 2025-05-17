@@ -19,7 +19,7 @@ class ControladorCategoria:
                     opcao_menu = self.__tela_categoria.mostrar_tela_inicial()
                     match int(opcao_menu):
                         case 1:
-                            self.adcionar_categorias()
+                            self.adcionar_categoria()
                         case 2:
                             self.__tela_categoria.mostrar_categorias(self.lista_categoria_string())
                         case 3:
@@ -29,7 +29,7 @@ class ControladorCategoria:
                 except ValueError:
                     print("Operação não reconhecida, por favor digita uma opção válida")
         
-    def adcionar_categorias(self):
+    def adcionar_categoria(self):
 
         nome_categoria = self.__tela_categoria.mostrar_cadastrar_nova_categoria()
         if nome_categoria in self.__categorias:

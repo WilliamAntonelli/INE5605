@@ -2,11 +2,13 @@
 
 from controller.ControladorCategoria import ControladorCategoria
 from controller.ControladorUsuario import ControladorUsuario
+from controller.ControladorFamiliar import ControladorFamiliar
 from view.TelaSistema import TelaSistema
 
 class ControladorSistema:
 
     def __init__(self):
+        self.__contralador_familiar = ControladorFamiliar()
         self.__controlador_categoria = ControladorCategoria()
         self.__controlador_usuario = ControladorUsuario()
         self.__tela_sistema = TelaSistema()
@@ -17,7 +19,7 @@ class ControladorSistema:
 
     def abre_tela(self):
 
-        dict_opcoes_para_execucao = {2: self.__controlador_categoria}
+        dict_opcoes_para_execucao = {1: self.__contralador_familiar, 2: self.__controlador_categoria}
 
         try:
 
