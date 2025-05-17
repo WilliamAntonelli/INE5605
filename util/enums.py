@@ -1,8 +1,27 @@
 from enum import Enum
 
 class Genero(Enum):
-    MASCULINO = "Homen"
-    FEMININO = "Mulher"
+    MASCULINO = (1, "Homen")
+    FEMININO = (2, "Mulher")
+
+    def __init__(self, codigo: int, descricao: str):
+        self._codigo = codigo
+        self._descricao = descricao
+
+    @property
+    def codigo(self):
+        return self._codigo
+
+    @property
+    def descricao(self):
+        return self._descricao
+    
+    @classmethod
+    def get_by_codigo(cls, codigo: int):
+        for item in cls:
+            if item.codigo == codigo:
+                return item
+        return None
 
 class TipoDespesa(Enum):
     FIXA = "Fixa"

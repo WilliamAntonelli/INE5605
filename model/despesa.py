@@ -1,5 +1,6 @@
 from model.nota_fiscal import NotaFiscal
-from util.enums import TipoDespesa, CategoriaDespesa, TipoPagamento
+from model.categoria import Categoria
+from util.enums import TipoDespesa, TipoPagamento
 
 
 class Despesa:
@@ -35,7 +36,7 @@ class Despesa:
 
     @categoria.setter
     def categoria(self, categoria_despesa):
-        if isinstance(categoria_despesa, CategoriaDespesa):
+        if isinstance(categoria_despesa, Categoria):
             self.__categoria = categoria_despesa
         else:
             raise Exception("Categoria da Despesa inválida, coloque uma categoria de despesa válida")

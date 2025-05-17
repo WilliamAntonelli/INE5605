@@ -1,15 +1,18 @@
 
 
 from controller.ControladorCategoria import ControladorCategoria
+from controller.ControladorUsuario import ControladorUsuario
 from view.TelaSistema import TelaSistema
 
 class ControladorSistema:
 
     def __init__(self):
         self.__controlador_categoria = ControladorCategoria()
+        self.__controlador_usuario = ControladorUsuario()
         self.__tela_sistema = TelaSistema()
 
     def iniciar(self):
+        self.__controlador_usuario.cadastrar_usuario()
         self.abre_tela()
 
     def abre_tela(self):
