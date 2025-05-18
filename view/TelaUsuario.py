@@ -6,6 +6,17 @@ class TelaUusuario:
     def __init__(self):
         ...
 
+
+    def mostrar_tela_inicial(self) -> str:
+            
+            print("Escolha uma das opções desejadas")
+            print("(1) Editar dados")
+            print("(2) Ver todos os dados")
+            print("(3) Voltar")
+    
+            opcao_menu = input()
+            return opcao_menu
+
     def mostrar_cadastrar_novo_usuario(self) -> dict:
         nome = input("Digite seu nome: ")
         profissao = input("Digite sua profissão: ")
@@ -31,4 +42,20 @@ class TelaUusuario:
         print("-------- Dados do usuário ----------")
         for key in usuario_dict:
             print(f"{key}: {usuario_dict[key]}")
+
+
+    def mostrar_informacoes_edit(self) -> None:
+
+        print("-------- Qual dados você deseja alterar ? ----------")
+        nome = print("(1) Nome: ")
+        profissao = print("(2) Profissão: ")
+        idade = print("(3) Idade: ")
+        genero = print("(4) Gênero: ")
+        email = print("(5) email: ")
+        senha = print("(6) Senha: ")
+        renda = print("(7) Renda: ")
+        
+        opcao_menu = input("Qual o campo você deseja alterar ?")
+        novo_campo = input("Digite o novo valor: ")
+        return opcao_menu, novo_campo
         

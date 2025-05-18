@@ -23,7 +23,7 @@ class ControladorCategoria:
                         case 2:
                             self.__tela_categoria.mostrar_categorias(self.lista_categoria_string())
                         case 3:
-                            break
+                             break
                         case _:
                             print("Operação não reconhecida, por favor digita uma opção válida")
                 except ValueError:

@@ -3,7 +3,6 @@ from model.despesa import Despesa
 from model.pessoa import Pessoa
 from model.familiar import Familiar
 from model.meta import Meta
-from model.transferencia import Transferencia
 
 
 class Usuario(Pessoa):
@@ -89,6 +88,8 @@ class Usuario(Pessoa):
         return self.__familiares
 
     def adicionar_transferencia(self, valor, familiar):
+
+        from model.transferencia import Transferencia
 
         if isinstance(familiar, Familiar):
             transferencia = Transferencia(valor, self, familiar)
