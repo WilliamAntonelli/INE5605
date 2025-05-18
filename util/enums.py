@@ -24,6 +24,7 @@ class ClasseAtivo(Enum):
 class TipoAtivo(Enum):
     ACAO = "Ação"
     FII = "Fundos imobiliários"
+    OUTROS = "Outros"
 
 class TipoInvestimento(Enum):
     DEBITO = "DEBITO"

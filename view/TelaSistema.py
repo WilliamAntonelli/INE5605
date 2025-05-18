@@ -16,6 +16,7 @@ class TelaSistema:
         print("(6) Despesas")
         print("(7) Cadastrar informações")
         print("(8) Notas Fiscais")
+        print("(9) Ativos Financeiros")
 
         opcao_menu = input()
         return opcao_menu
