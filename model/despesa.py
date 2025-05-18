@@ -1,20 +1,21 @@
 from model.nota_fiscal import NotaFiscal
-from util.enums import TipoDespesa, CategoriaDespesa, TipoPagamento
+from util.enums import TipoDespesa, TipoPagamento
+from model.categoria import Categoria
 
 
 class Despesa:
-    def __init__(self, tipo_despesa, categoria_despesa, local, valor, tipo_pagamento):
-        self.__tipo_despesa = None
-        self.__categoria = None
+    def __init__(self, tipo, categoria, local, valor, forma, codigo="Sem nota fiscal", arquivo=None):
+        self.__tipo_despesa = tipo
+        self.__categoria = categoria
         self.__local = local
         self.__valor = valor
-        self.__tipo_pagamento = None
-        self.__nota_fiscal = None
+        self.__tipo_pagamento = forma
+        self.__nota_fiscal = NotaFiscal(codigo, arquivo)
 
-        self.tipo_despesa = tipo_despesa
-        self.categoria = categoria_despesa
-        self.tipo_pagamento = tipo_pagamento
 
+    def adicionar_nota_fiscal(self, codigo, arquivo):
+        nota = NotaFiscal(codigo, arquivo)
+        self.__nota_fiscal = nota
 
     @property
     def tipo_despesa(self):
@@ -35,7 +36,7 @@ class Despesa:
 
     @categoria.setter
     def categoria(self, categoria_despesa):
-        if isinstance(categoria_despesa, CategoriaDespesa):
+        if isinstance(categoria_despesa, Categoria):
             self.__categoria = categoria_despesa
         else:
             raise Exception("Categoria da Despesa inválida, coloque uma categoria de despesa válida")

@@ -11,6 +11,7 @@ class TelaCategoria:
 
         print("(1) Cadastrar nova categoria")
         print("(2) Listar categorias")
+        print("(3) Voltar")
 
         opcao_menu = input()
         return opcao_menu

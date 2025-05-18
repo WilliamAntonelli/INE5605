@@ -1,21 +1,21 @@
 
 class NotaFiscal:
-    def __init__(self, nome_arquivo, arquivo=None):
-        self._nome_arquivo = nome_arquivo
-        self._arquivo = arquivo
+    def __init__(self, codigo: str, arquivo: str | None):
+        self.__codigo = codigo
+        self.__arquivo = arquivo
 
     @property
-    def nome_arquivo(self):
-        return self._nome_arquivo
+    def codigo(self):
+        return self.__codigo
 
-    @nome_arquivo.setter
-    def nome_arquivo(self, value):
-        self._nome_arquivo = value
+    @codigo.setter
+    def codigo(self, codigo):
+        self.__codigo = codigo
 
     @property
     def arquivo(self):
-        return self._arquivo
+        return self.__arquivo
 
     @arquivo.setter
-    def arquivo(self, value):
-        self._arquivo = value
+    def arquivo(self, arquivo):
+        self.__arquivo = arquivo

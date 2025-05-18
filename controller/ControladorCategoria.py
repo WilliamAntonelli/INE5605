@@ -22,6 +22,8 @@ class ControladorCategoria:
                         self.adcionar_categorias()
                     case 2:
                         self.__tela_categoria.mostrar_categorias(self.lista_categoria_string())
+                    case 3:
+                        break
                     case _:
                         print("Operação não reconhecida, por favor digita uma opção válida")
         except ValueError:
@@ -39,3 +41,6 @@ class ControladorCategoria:
 
     def lista_categoria_string(self) -> List[str]:
         return [categoria.nome for categoria in self.__categorias]
+
+    def get_categorias(self) -> list:
+        return self.__categorias
