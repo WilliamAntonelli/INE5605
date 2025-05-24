@@ -18,7 +18,7 @@ class TelaDespesa:
 
 
     def mostrar_cadastrar_nova_despesa(self, categorias: List[Categoria])-> tuple[TipoDespesa,
-    Categoria, str, float, TipoPagamento, str, str]:
+    Categoria, str, float, TipoPagamento, int, int, str, str]:
         print("-------- Insira nova Despesa --------")
 
         while True:
@@ -73,6 +73,10 @@ class TelaDespesa:
             except ValueError:
                 print("Operação não reconhecida, por favor digite uma opção válida")
 
+        mes = int(input("Insira o mês de referência: "))
+        ano = int(input("Insira o ano de referência: "))
+
+
         tem_nota = input("Deseja adicionar nota fiscal a essa despesa? (s/n): ").strip().lower()
         if tem_nota == 's':
             codigo = input("Insira o codigo da nota fiscal: ")
@@ -81,7 +85,7 @@ class TelaDespesa:
             codigo = "Sem nota fiscal"
             arquivo = None
 
-        return tipo, categoria, local, valor, forma, codigo, arquivo
+        return tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo
 
 
     def mostrar_despesas(self, despesas: List[str]) -> None:

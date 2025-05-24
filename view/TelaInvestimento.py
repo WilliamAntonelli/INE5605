@@ -49,8 +49,10 @@ class TelaInvestimento:
                 print("Operação não reconhecida, por favor digite uma opção válida")
 
         valor = float(input("Insira o valor: "))
+        mes = int(input("Insira o mês correspondente: "))
+        ano = int(input("Insira o ano correspondente: "))
 
-        return ativo, tipo, valor
+        return ativo, tipo, valor, mes, ano
 
     def mostrar_saldo(self, saldo: float):
         print("-------- Saldo --------")

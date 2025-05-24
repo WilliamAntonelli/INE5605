@@ -4,11 +4,13 @@ from model.categoria import Categoria
 
 
 class Despesa:
-    def __init__(self, tipo, categoria, local, valor, forma, codigo="Sem nota fiscal", arquivo=None):
+    def __init__(self, tipo, categoria, local, valor, forma, mes, ano, codigo="Sem nota fiscal", arquivo=None):
         self.__tipo_despesa = tipo
         self.__categoria = categoria
         self.__local = local
         self.__valor = valor
+        self.__mes = mes
+        self.__ano = ano
         self.__tipo_pagamento = forma
         self.__nota_fiscal = NotaFiscal(codigo, arquivo)
 
@@ -46,16 +48,33 @@ class Despesa:
         return self.__local
 
     @local.setter
-    def local(self, value):
-        self.__local = value
+    def local(self, local):
+        self.__local = local
 
     @property
     def valor(self):
         return self.__valor
 
     @valor.setter
-    def valor(self, value):
-        self.__valor = value
+    def valor(self, valor):
+        self.__valor = valor
+
+    @property
+    def mes(self):
+        return self.__mes
+
+    @mes.setter
+    def mes(self, mes):
+        self.__mes = mes
+
+    @property
+    def ano(self):
+        return self.__ano
+
+    @ano.setter
+    def ano(self, ano):
+        self.__ano = ano
+
 
     @property
     def tipo_pagamento(self):

@@ -2,10 +2,11 @@ from model.investimento import Investimento
 from view.TelaInvestimento import TelaInvestimento
 from typing import List
 from controller.ControladorAtivoFinanceiro import ControladorAtivoFinanceiro
+from controller.ControladorUsuario import ControladorUsuario
 
 class ControladorInvestimento:
-    def __init__(self, controlador_ativo_financeiro: ControladorAtivoFinanceiro):
-        self.__investimentos = []
+    def __init__(self, controlador_ativo_financeiro: ControladorAtivoFinanceiro, controlador_usuario: ControladorUsuario):
+        self.__usuario = controlador_usuario
         self.__tela_investimento = TelaInvestimento()
         self.__ativos_financeiros = controlador_ativo_financeiro
         self.__saldo = 0
@@ -39,10 +40,10 @@ class ControladorInvestimento:
             print("Nenhum ativo cadastrado. Cadastre um ativo antes de criar um investimento.")
             return
 
-        ativo, tipo, valor = self.__tela_investimento.mostrar_cadastrar_novo_investimento(ativos)
+        ativo, tipo, valor, mes, ano = self.__tela_investimento.mostrar_cadastrar_novo_investimento(ativos)
 
-        novo_investimento = Investimento(ativo, tipo, valor)
-        self.__investimentos.append(novo_investimento)
+        novo_investimento = Investimento(ativo, tipo, valor, mes, ano)
+        self.__usuario.investimentos.append(novo_investimento)
 
         if tipo.name == "CREDITO":
             self.__saldo += valor
@@ -59,10 +60,10 @@ class ControladorInvestimento:
         print("Investimento criado com sucesso!")
 
 
-
     def mostrar_saldo_string(self) -> float:
         return self.__saldo
 
 
     def lista_investimento_string(self) -> List[str]:
-        return [f"{investimento.ativo.nome} - Valor: R$ {investimento.valor:.2f}" for investimento in self.__investimentos]
+        return [(f"{investimento.ativo.nome} - Valor: R$ {investimento.valor:.2f} - Mês: {investimento.mes}"
+                 f" - Ano: {investimento.ano}") for investimento in self.__usuario.investimentos]

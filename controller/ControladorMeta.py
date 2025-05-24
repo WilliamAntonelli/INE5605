@@ -1,10 +1,11 @@
 from model.meta import Meta
 from view.TelaMeta import TelaMeta
 from typing import List
+from controller.ControladorUsuario import ControladorUsuario
 
 class ControladorMeta:
-    def __init__(self):
-        self.__metas = []
+    def __init__(self, controlador_usuario: ControladorUsuario):
+        self.__usuario = controlador_usuario
         self.__tela_meta = TelaMeta()
 
     def executar(self):
@@ -30,13 +31,14 @@ class ControladorMeta:
     def adicionar_meta(self):
         valor, data = self.__tela_meta.mostrar_cadastrar_nova_meta()
 
-        if any(meta.data_vencimento == data for meta in self.__metas):
+        if any(meta.data_vencimento == data for meta in self.__usuario.metas):
             print(f"Já existe uma meta com data de vencimento '{data}'.")
             return
 
         nova_meta = Meta(valor, data)
-        self.__metas.append(nova_meta)
+        self.__usuario.metas.append(nova_meta)
         print("Meta cadastrada com sucesso!")
 
+
     def lista_meta_string(self) -> List[str]:
-        return [f"Objetivo: R${meta.valor_objetivo:.2f}, Vencimento: {meta.data_vencimento}" for meta in self.__metas]
+        return [f"Objetivo: R${meta.valor_objetivo:.2f}, Vencimento: {meta.data_vencimento}" for meta in self.__usuario.metas]

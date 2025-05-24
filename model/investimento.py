@@ -2,10 +2,12 @@ from util.enums import TipoInvestimento
 
 
 class Investimento:
-    def __init__(self, ativo, tipo, valor,):
+    def __init__(self, ativo, tipo, valor, mes, ano):
         self.__ativo = ativo
         self.__tipo_investimento = tipo
         self.__valor = valor
+        self.__mes = mes
+        self.__ano = ano
 
     @property
     def ativo(self):
@@ -20,8 +22,24 @@ class Investimento:
         return self.__valor
 
     @valor.setter
-    def valor(self, value):
-        self.__valor = value
+    def valor(self, valor):
+        self.__valor = valor
+
+    @property
+    def mes(self):
+        return self.__mes
+
+    @mes.setter
+    def mes(self, mes):
+        self.__mes = mes
+
+    @property
+    def ano(self):
+        return self.__ano
+
+    @ano.setter
+    def ano(self, ano):
+        self.__ano = ano
 
     @property
     def tipo_investimento(self):

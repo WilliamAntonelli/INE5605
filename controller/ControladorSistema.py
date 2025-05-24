@@ -1,5 +1,5 @@
 
-
+from controller.ControladorUsuario import ControladorUsuario
 from controller.ControladorCategoria import ControladorCategoria
 from controller.ControladorMeta import ControladorMeta
 from controller.ControladorAtivoFinanceiro import ControladorAtivoFinanceiro
@@ -9,12 +9,13 @@ from view.TelaSistema import TelaSistema
 
 class ControladorSistema:
 
-    def __init__(self):
+    def __init__(self,):
+        self.__controlador_usuario = ControladorUsuario()
         self.__controlador_categoria = ControladorCategoria()
-        self.__controlador_meta = ControladorMeta()
+        self.__controlador_meta = ControladorMeta(self.__controlador_usuario)
         self.__controlador_ativo_financeiro = ControladorAtivoFinanceiro()
-        self.__controlador_investimento = ControladorInvestimento(self.__controlador_ativo_financeiro)
-        self.__controlador_despesa = ControladorDespesa(self.__controlador_categoria)
+        self.__controlador_investimento = ControladorInvestimento(self.__controlador_ativo_financeiro, self.__controlador_usuario)
+        self.__controlador_despesa = ControladorDespesa(self.__controlador_categoria, self.__controlador_usuario)
         self.__tela_sistema = TelaSistema()
 
     def iniciar(self):

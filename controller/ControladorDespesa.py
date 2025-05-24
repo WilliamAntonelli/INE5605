@@ -2,11 +2,11 @@ from model.despesa import Despesa
 from view.TelaDespesa import TelaDespesa
 from typing import List
 from controller.ControladorCategoria import ControladorCategoria
-
+from controller.ControladorUsuario import ControladorUsuario
 
 class ControladorDespesa:
-    def __init__(self, controlador_categoria: ControladorCategoria):
-        self.__despesas = []
+    def __init__(self, controlador_categoria: ControladorCategoria, controlador_usuario: ControladorUsuario):
+        self.__usuario = controlador_usuario
         self.__tela_despesa = TelaDespesa()
         self.__categorias = controlador_categoria
 
@@ -44,91 +44,71 @@ class ControladorDespesa:
             print("Nenhuma categoria cadastrado. Cadastre uma categoria antes de criar uma despesa.")
             return
 
-        tipo, categoria, local, valor, forma, codigo, arquivo = (
-        self.__tela_despesa.mostrar_cadastrar_nova_despesa(categoria))
+        tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
+        (self.__tela_despesa.mostrar_cadastrar_nova_despesa(categoria))
 
-        nova_despesa = Despesa(tipo, categoria, local, valor, forma, codigo, arquivo)
-        self.__despesas.append(nova_despesa)
+        nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
+        self.__usuario.despesas.append(nova_despesa)
 
         print("Despesa criada com sucesso!")
 
+
     def lista_despesa_string(self) -> List[str]:
         return [(f"{despesa.tipo_despesa.name} | {despesa.categoria.nome} | {despesa.local} "
-                 f"| R$ {despesa.valor:.2f} | {despesa.tipo_pagamento.name} | Informações de nota fiscal: "
+                 f"| R$ {despesa.valor:.2f} | {despesa.tipo_pagamento.name} | Mês: {despesa.mes} | Ano: {despesa.ano}"
+                 f"| Informações de nota fiscal: "
                  f"{despesa.nota_fiscal.codigo} | {despesa.nota_fiscal.arquivo}")
-            for despesa in self.__despesas]
+            for despesa in self.__usuario.despesas]
 
 
     def buscar_despesa_por_idx(self, idx: int) -> Despesa | None:
         if 0 <= idx < len(self.__despesas):
-            return self.__despesas[idx]
+            return self.__usuario.despesas[idx]
         return None
 
     def buscar_despesas_por_local(self, local: str) -> List[Despesa]:
-        return [d for d in self.__despesas if d.local.lower() == local.lower()]
+        return [d for d in self.__usuario.despesas if d.local.lower() == local.lower()]
 
 
     def alterar_despesa(self):
-        self.__tela_despesa.mostrar_despesas(self.lista_despesa_string())
-        escolha = input("Digite o número da despesa ou o local para alterar: ")
+        try:
+            if not self.__usuario.despesas:
+                print("Nenhuma despesa cadastrada para alterar.")
+                return
 
-        despesa = None
+            idx = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string())
 
-        if escolha.isdigit():
-            despesa = self.buscar_despesa_por_idx(int(escolha))
-        else:
-            despesas_local = self.buscar_despesas_por_local(escolha)
-            if despesas_local:
-                print("Despesas encontradas com esse local:")
-                for idx, d in enumerate(despesas_local):
-                    print(f"({idx}) - {d.local} | R$ {d.valor:.2f}")
-                idx_escolha = int(input("Digite o número da despesa a alterar: "))
-                if 0 <= idx_escolha < len(despesas_local):
-                    despesa = despesas_local[idx_escolha]
+            if 0 <= idx < len(self.__usuario.despesas):
+                tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
+                    self.__tela_despesa.mostrar_cadastrar_nova_despesa(self.__categorias.get_categorias())
 
-        if not despesa:
-            print("Despesa não encontrada.")
-            return
+                nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
+                self.__usuario.despesas[idx] = nova_despesa  # Atualiza a despesa na lista do usuário
 
-        tipo, categoria, local, valor, forma, codigo, arquivo = (
-        self.__tela_despesa.mostrar_cadastrar_nova_despesa(
-            self.__categorias.get_categorias()))
+                print("Despesa alterada com sucesso!")
+            else:
+                print("Índice inválido. Nenhuma despesa foi alterada.")
+        except Exception as e:
+            print(f"Erro ao alterar despesa: {e}")
 
-        despesa.tipo_despesa = tipo
-        despesa.categoria = categoria
-        despesa.local = local
-        despesa.valor = float(valor)
-        despesa.tipo_pagamento = forma
-        despesa.nota_fiscal.codigo = codigo
-        despesa.nota_fiscal.arquivo = arquivo
 
-        print("Despesa alterada com sucesso.")
 
     def excluir_despesa(self):
-        self.__tela_despesa.mostrar_despesas(self.lista_despesa_string())
-        escolha = input("Digite o número da despesa ou o local para excluir: ")
+        try:
+            if not self.__usuario.despesas:
+                print("Nenhuma despesa cadastrada para excluir.")
+                return
 
-        despesa = None
+            idx = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string())
 
-        if escolha.isdigit():
-            idx = int(escolha)
-            if 0 <= idx < len(self.__despesas):
-                despesa = self.__despesas[idx]
-        else:
-            despesas_local = self.buscar_despesas_por_local(escolha)
-            if despesas_local:
-                print("Despesas encontradas com esse local:")
-                for idx, d in enumerate(despesas_local):
-                    print(f"({idx}) - {d.local} | R$ {d.valor:.2f}")
-                idx_escolha = int(input("Digite o número da despesa a excluir: "))
-                if 0 <= idx_escolha < len(despesas_local):
-                    despesa = despesas_local[idx_escolha]
+            if 0 <= idx < len(self.__usuario.despesas):
+                despesa_excluida = self.__usuario.despesas.pop(idx)
+                print(f"Despesa '{despesa_excluida.local}' removida com sucesso!")
+            else:
+                print("Índice inválido. Nenhuma despesa foi excluída.")
+        except Exception as e:
+            print(f"Erro ao excluir despesa: {e}")
 
-        if despesa and despesa in self.__despesas:
-            self.__despesas.remove(despesa)
-            print("Despesa excluída com sucesso.")
-        else:
-            print("Despesa não encontrada.")
 
     def relatorios_despesa(self):
         while True:
@@ -145,7 +125,7 @@ class ControladorDespesa:
 
     def total_por_categoria(self):
         totais = {}
-        for despesa in self.__despesas:
+        for despesa in self.__usuario.despesas:
             nome_categoria = despesa.categoria.nome
             if nome_categoria in totais:
                 totais[nome_categoria] += despesa.valor
@@ -155,7 +135,7 @@ class ControladorDespesa:
         self.__tela_despesa.mostrar_relatorio_total_por_categoria(totais)
 
     def estatisticas_despesas(self):
-        if not self.__despesas:
+        if not self.__usuario.despesas:
             print("Nenhuma despesa cadastrada.")
             return
 
