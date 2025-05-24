@@ -11,7 +11,6 @@ class ControladorAtivoFinanceiro:
         self.tela_inicial()
 
     def tela_inicial(self):
-
             try:
                 while True:
                     opcao_menu = self.__tela_ativo_financeiro.mostrar_tela_inicial()
@@ -24,21 +23,37 @@ class ControladorAtivoFinanceiro:
                             break
                         case _:
                             print("Operação não reconhecida, por favor digite uma opção válida")
+
             except ValueError:
-                print("Operação não reconhecida, por favor digite uma opção válida")
+                print("Operação não reconhecida, por favor digita uma opção válida")
+            except Exception as e:
+                print(f"Ocorreu um erro inesperado: {str(e)}")
 
 
     def adicionar_ativo_financeiro(self):
+        try:
+            classe, tipo, nome = self.__tela_ativo_financeiro.mostrar_cadastrar_novo_ativo_financeiro()
 
-        classe, tipo, nome = self.__tela_ativo_financeiro.mostrar_cadastrar_novo_ativo_financeiro()
+            if nome is None or nome.strip() == "":
+                print("O nome do Ativo Financeiro não pode ser vazio. Por favor, digite um nome válido.")
+                return
 
-        if any(ativo.nome == nome for ativo in self.__ativos_financeiros):
-            print(f"Já existe esse Ativo Financeiro '{nome}'.")
-            return
+            if any(ativo.nome == nome for ativo in self.__ativos_financeiros):
+                print(f"Já existe esse Ativo Financeiro '{nome}'.")
+                return
 
-        novo_ativo = AtivoFinanceiro(classe, tipo, nome)
-        self.__ativos_financeiros.append(novo_ativo)
-        print("Ativo Financeiro criado com sucesso!")
+            novo_ativo = AtivoFinanceiro(classe, tipo, nome)
+            self.__ativos_financeiros.append(novo_ativo)
+            print("Ativo Financeiro criado com sucesso!")
+
+
+        except ValueError:
+            print("Erro: Valor inválido informado.")
+        except TypeError:
+            print("Erro: Tipo de dado incorreto.")
+        except Exception as e:
+            print(f"Ocorreu um erro ao adicionar o Ativo Financeiro: {str(e)}")
+
 
     def lista_ativos_financeiros_string(self) -> List[str]:
         return [ativo_financeiro.nome for ativo_financeiro in self.__ativos_financeiros]

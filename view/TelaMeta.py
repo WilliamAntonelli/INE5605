@@ -14,7 +14,7 @@ class TelaMeta:
     def mostrar_cadastrar_nova_meta(self) -> tuple[float, str]:
         print("-------- Insira nova meta --------")
         valor = float(input("Insira o valor do objetivo: "))
-        data = input("Insira a data de vencimento (AAAA-MM-DD): ")
+        data = input("Insira a data de vencimento (DD/MM/AAAA): ")
         return valor, data
 
     def mostrar_metas(self, metas: List[str]) -> None:

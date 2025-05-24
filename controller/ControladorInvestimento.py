@@ -31,33 +31,43 @@ class ControladorInvestimento:
                         case _:
                             print("Operação não reconhecida, por favor digite uma opção válida")
             except ValueError:
-                print("Operação não reconhecida, por favor digite uma opção válida")
+                print("Operação não reconhecida, por favor digita uma opção válida")
+            except Exception as e:
+                print(f"Ocorreu um erro inesperado: {str(e)}")
 
     def adicionar_investimento(self):
-        ativos = self.__ativos_financeiros.get_ativos_financeiros()
+        try:
+            ativos = self.__ativos_financeiros.get_ativos_financeiros()
 
-        if not ativos:
-            print("Nenhum ativo cadastrado. Cadastre um ativo antes de criar um investimento.")
-            return
-
-        ativo, tipo, valor, mes, ano = self.__tela_investimento.mostrar_cadastrar_novo_investimento(ativos)
-
-        novo_investimento = Investimento(ativo, tipo, valor, mes, ano)
-        self.__usuario.investimentos.append(novo_investimento)
-
-        if tipo.name == "CREDITO":
-            self.__saldo += valor
-            print(f"CRÉDITO registrado. Valor creditado: R$ {valor:.2f}")
-        elif tipo.name == "DEBITO":
-            if  self.__saldo >= valor:
-                self.__saldo -= valor
-                print(f"DÉBITO registrado. Valor debitado: R$ {valor:.2f}")
-            else:
-                print("Saldo insuficiente para realizar o débito. Débito não registrado.")
-                self.__investimentos.pop()
+            if not ativos:
+                print("Nenhum ativo cadastrado. Cadastre um ativo antes de criar um investimento.")
                 return
 
-        print("Investimento criado com sucesso!")
+            ativo, tipo, valor, mes, ano = self.__tela_investimento.mostrar_cadastrar_novo_investimento(ativos)
+
+            novo_investimento = Investimento(ativo, tipo, valor, mes, ano)
+            self.__usuario.investimentos.append(novo_investimento)
+
+            if tipo.name == "CREDITO":
+                self.__saldo += valor
+                print(f"CRÉDITO registrado. Valor creditado: R$ {valor:.2f}")
+            elif tipo.name == "DEBITO":
+                if  self.__saldo >= valor:
+                    self.__saldo -= valor
+                    print(f"DÉBITO registrado. Valor debitado: R$ {valor:.2f}")
+                else:
+                    print("Saldo insuficiente para realizar o débito. Débito não registrado.")
+                    self.__investimentos.pop()
+                    return
+
+            print("Investimento criado com sucesso!")
+
+        except ValueError:
+            print("Erro: Valor inválido informado.")
+        except TypeError:
+            print("Erro: Tipo de dado incorreto.")
+        except Exception as e:
+            print(f"Ocorreu um erro ao adicionar o investimento: {str(e)}")
 
 
     def mostrar_saldo_string(self) -> float:
