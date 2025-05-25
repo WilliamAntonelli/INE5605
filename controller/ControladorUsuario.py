@@ -1,3 +1,7 @@
+from model.meta import Meta
+from model.despesa import Despesa
+from model.investimento import Investimento
+from typing import List
 from model.usuario import Usuario
 from util.enums import Genero
 from view.TelaUsuario import TelaUusuario
@@ -118,4 +122,3 @@ class ControladorUsuario:
                 print("Algo de errado ocorreu durante a execução do programa")
                 print(e)
 
-        

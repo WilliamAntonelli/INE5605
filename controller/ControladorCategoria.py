@@ -15,19 +15,18 @@ class ControladorCategoria:
     def tela_inicial(self):
 
             while True:
-                try:
-                    opcao_menu = self.__tela_categoria.mostrar_tela_inicial()
-                    match int(opcao_menu):
-                        case 1:
-                            self.adcionar_categoria()
-                        case 2:
-                            self.__tela_categoria.mostrar_categorias(self.lista_categoria_string())
-                        case 3:
-                             break
-                        case _:
-                            print("Operação não reconhecida, por favor digita uma opção válida")
-                except ValueError:
-                    print("Operação não reconhecida, por favor digita uma opção válida")
+                opcao_menu = self.__tela_categoria.mostrar_tela_inicial()
+                match int(opcao_menu):
+                    case 1:
+                        self.adcionar_categorias()
+                    case 2:
+                        self.__tela_categoria.mostrar_categorias(self.lista_categoria_string())
+                    case 3:
+                        break
+                    case _:
+                        print("Operação não reconhecida, por favor digita uma opção válida")
+        except ValueError:
+            print("Operação não reconhecida, por favor digita uma opção válida")
         
     def adcionar_categoria(self):
 
@@ -41,3 +40,6 @@ class ControladorCategoria:
 
     def lista_categoria_string(self) -> List[str]:
         return [categoria.nome for categoria in self.__categorias]
+
+    def get_categorias(self) -> list:
+        return self.__categorias

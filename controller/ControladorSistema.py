@@ -1,6 +1,9 @@
+from controller.ControladorUsuario import ControladorUsuario
 from controller.ControladorCategoria import ControladorCategoria
-from controller.ControladorNotaFiscal import ControladorNotaFiscal
 from controller.ControladorMeta import ControladorMeta
+from controller.ControladorAtivoFinanceiro import ControladorAtivoFinanceiro
+from controller.ControladorInvestimento import ControladorInvestimento
+from controller.ControladorDespesa import ControladorDespesa
 from controller.ControladorUsuario import ControladorUsuario
 from controller.ControladorFamiliar import ControladorFamiliar
 from controller.ControladorTransferencia import ControladorTransferencia
@@ -8,14 +11,13 @@ from view.TelaSistema import TelaSistema
 
 class ControladorSistema:
 
-    def __init__(self):
-        self.__contralador_familiar = ControladorFamiliar(self)
+    def __init__(self,):
+        self.__controlador_usuario = ControladorUsuario()
         self.__controlador_categoria = ControladorCategoria()
-        self.__controlador_nota_fiscal = ControladorNotaFiscal()
-        self.__controlador_meta = ControladorMeta()
-        self.__controlador_usuario = ControladorUsuario(self)
-        self.__controlador_transferencia = ControladorTransferencia(self)
-        self.__tela_sistema = TelaSistema()
+        self.__controlador_meta = ControladorMeta(self.__controlador_usuario)
+        self.__controlador_ativo_financeiro = ControladorAtivoFinanceiro()
+        self.__controlador_investimento = ControladorInvestimento(self.__controlador_ativo_financeiro, self.__controlador_usuario)
+        self.__controlador_despesa = ControladorDespesa(self.__controlador_categoria, self.__controlador_usuario)
 
     @property
     def controlador_usuario(self):
@@ -27,17 +29,8 @@ class ControladorSistema:
 
     def abre_tela(self):
 
-        dict_opcoes_para_execucao = {
-
-            1: self.__contralador_familiar, 
-            2: self.__controlador_categoria,
-            3: self.__controlador_meta,
-            4: "",
-            5: self.__controlador_transferencia,
-            6: "",
-            7: self.__controlador_usuario,
-            8: self.__controlador_nota_fiscal
-        }
+        dict_opcoes_para_execucao = {2: self.__controlador_categoria, 3: self.__controlador_meta, 4: self.__controlador_investimento,
+                                     6: self.__controlador_despesa, 8: self.__controlador_ativo_financeiro}
 
         while True:
             try:
@@ -49,11 +42,8 @@ class ControladorSistema:
                 controlador = dict_opcoes_para_execucao.get(int(opca_menu))
                 if controlador is None:
                     print("Operação não reconhecida, por favor digita uma opção válida")
-                    continue
-                
-                controlador.executar()
-                        
-            except ValueError:
-                print("Operação não reconhecida, por favor digita uma opção válida")
-
+                else:
+                    acao.executar()
+        except ValueError:
+            print("Operação não reconhecida, por favor digita uma opção válida")
 
