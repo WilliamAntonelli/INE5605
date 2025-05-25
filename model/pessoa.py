@@ -1,15 +1,19 @@
 from util.enums import Genero
 from abc import ABC
+from exceptions.InvalidInputException import InvalidInputException
 
 
 class Pessoa(ABC):
 
-    def __init__(self, nome, profissao, idade, genero):
-        self.__nome = nome
-        self.__profissao = profissao
-        self.__idade = idade
+    def __init__(self, nome: str, profissao: str, idade: int, genero: Genero):
+        self.__nome = ""
+        self.__profissao = ""
+        self.__idade = 0
         self.__genero = None
 
+        self.nome = nome
+        self.profissao = profissao
+        self.idade = idade
         self.genero = genero
 
 
@@ -19,6 +23,11 @@ class Pessoa(ABC):
 
     @nome.setter
     def nome(self, nome):
+
+        nome_valido = nome.strip()
+        if len(nome_valido) == 0:
+            raise InvalidInputException("Nome inválido, coloque um nome válido")
+
         self.__nome = nome
 
     @property
@@ -27,6 +36,11 @@ class Pessoa(ABC):
 
     @profissao.setter
     def profissao(self, profissao):
+
+        profissao_valida = profissao.strip()
+        if len(profissao_valida) == 0:
+            raise InvalidInputException("Profissão inválida, coloque uma profissão válida")
+    
         self.__profissao = profissao
 
     @property
@@ -35,6 +49,10 @@ class Pessoa(ABC):
 
     @idade.setter
     def idade(self, idade):
+
+        if idade <= 0:
+            raise InvalidInputException("Idade inválida, coloque uma profissão válida")
+        
         self.__idade = idade
 
     @property
@@ -43,11 +61,12 @@ class Pessoa(ABC):
 
     @genero.setter
     def genero(self, genero):
-        if isinstance(genero, Genero):
-            self.__genero = genero
-        else:
-            raise Exception("Genero inválido, coloque um genero válido")
+        if not isinstance(genero, Genero):
+            raise InvalidInputException("Genero inválido, coloque um genero válido")
+        
+        self.__genero = genero
 
+            
     def exibir_dados(self):
         return f"Nome: {self.__nome} | Profissão: {self.__profissao} | Idade: {self.__idade} | Gênero: {self.__genero.value}"
 

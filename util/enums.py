@@ -1,8 +1,27 @@
 from enum import Enum
 
 class Genero(Enum):
-    MASCULINO = "Homen"
-    FEMININO = "Mulher"
+    MASCULINO = (1, "Homen")
+    FEMININO = (2, "Mulher")
+
+    def __init__(self, codigo: int, descricao: str):
+        self._codigo = codigo
+        self._descricao = descricao
+
+    @property
+    def codigo(self):
+        return self._codigo
+
+    @property
+    def descricao(self):
+        return self._descricao
+    
+    @classmethod
+    def get_by_codigo(cls, codigo: int):
+        for item in cls:
+            if item.codigo == codigo:
+                return item
+        return None
 
 class TipoDespesa(Enum):
     FIXA = "Fixa"
@@ -31,9 +50,39 @@ class TipoInvestimento(Enum):
     CREDITO = "CREDITO"
 
 class Parentesco(Enum):
-    FILHO = "Filho(a)"
-    MAE = "Mâe"
-    PAI = "Pai"
-    CONJUGE = "Conjuge"
-    OUTRO = "Outro"
+    FILHO = (1, "Filho(a)")
+    MAE = (2, "Mãe")
+    PAI = (3, "Pai")
+    CONJUGE = (4, "Cônjuge")
+    IRMAO = (5, "Irmão(ã)")
+    AVO_MATERNO = (6, "Avô(ó) Materno(a)")
+    AVO_PATERNAL = (7, "Avô(ó) Paterno(a)")
+    TIO = (8, "Tio(a)")
+    PRIMO = (9, "Primo(a)")
+    ENTEADO = (10, "Enteado(a)")
+    SOGRO = (11, "Sogro(a)")
+    CUNHADO = (12, "Cunhado(a)")
+    GENRO = (13, "Genro/Nora")
+    NETO = (14, "Neto(a)")
+    PADRASTO = (15, "Padrasto")
+    MADRASTA = (16, "Madrasta")
+    OUTRO = (99, "Outro")
 
+    def __init__(self, codigo: int, descricao: str):
+        self._codigo = codigo
+        self._descricao = descricao
+
+    @property
+    def codigo(self):
+        return self._codigo
+
+    @property
+    def descricao(self):
+        return self._descricao
+    
+    @classmethod
+    def get_by_codigo(cls, codigo: int):
+        for item in cls:
+            if item.codigo == codigo:
+                return item
+        return None
