@@ -48,7 +48,7 @@ class ControladorDespesa:
                 print("Nenhuma categoria cadastrada. Cadastre uma categoria antes de criar uma despesa.")
                 return
 
-            tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
+            tipo_despesa, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
             (self.__tela_despesa.mostrar_cadastrar_nova_despesa(categoria))
 
             if not codigo or not isinstance(codigo, str):
@@ -56,7 +56,8 @@ class ControladorDespesa:
             if arquivo is not None and not isinstance(arquivo, str):
                 raise ValueError("Arquivo inválido. Você deve digitar o nome do arquivo.")
 
-            nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
+
+            nova_despesa = Despesa(tipo_despesa, categoria, local, valor, forma, mes, ano, codigo, arquivo)
             self.__controlador_sistema.controlador_usuario.usuario.despesas.append(nova_despesa)
 
             print("Despesa criada com sucesso!")
@@ -103,10 +104,10 @@ class ControladorDespesa:
             indice = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string())
 
             if 0 <= indice < len(self.__controlador_sistema.controlador_usuario.usuario.despesas):
-                tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
+                tipo_despesa, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
                     self.__tela_despesa.mostrar_cadastrar_nova_despesa(self.__categorias.get_categorias())
 
-                nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
+                nova_despesa = Despesa(tipo_despesa, categoria, local, valor, forma, mes, ano, codigo, arquivo)
                 self.__controlador_sistema.controlador_usuario.usuario.despesas[indice] = nova_despesa
 
                 print("Despesa alterada com sucesso!")

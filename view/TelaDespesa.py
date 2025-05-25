@@ -29,8 +29,8 @@ class TelaDespesa:
             try:
                 tipo_por_indice = int(input("Escolha o tipo de despesa: "))
                 if 0 <= tipo_por_indice < len(TipoDespesa):
-                    tipo = list(TipoDespesa)[tipo_por_indice]
-                    print(f"Você escolheu: {tipo.name}")
+                    tipo_despesa = list(TipoDespesa)[tipo_por_indice]
+                    print(f"Você escolheu: {tipo_despesa.name}")
                     break
                 else:
                     print("Operação não reconhecida, por favor digite uma opção válida")
@@ -115,7 +115,7 @@ class TelaDespesa:
             codigo = "Sem nota fiscal"
             arquivo = None
 
-        return tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo
+        return tipo_despesa, categoria, local, valor, forma, mes, ano, codigo, arquivo
 
 
     def mostrar_despesas(self, despesas: List[str]) -> None:
