@@ -11,9 +11,10 @@ class TelaDespesa:
         print("(1) Cadastrar nova Despesa")
         print("(2) Alterar")
         print("(3) Mostrar todas as Despesas")
-        print("(4) Excluir")
-        print("(5) Relatórios")
-        print("(6) Voltar para o Menu Principal")
+        print("(4) Mostrar despesas por mês")
+        print("(5) Excluir")
+        print("(6) Relatórios")
+        print("(7) Voltar para o Menu Principal")
         return input("Escolha uma opção: ")
 
 
@@ -53,10 +54,22 @@ class TelaDespesa:
             except ValueError:
                 print("Operação não reconhecida, por favor digite uma opção válida")
 
+        while True:
+            local = input("Insira o local: ").strip()
+            if local:
+                break
+            else:
+                print("O campo 'local' não pode estar em branco. Tente novamente.")
 
-        local = input("Insira o local: ")
-        valor = float(input("Insira o valor: "))
-
+        while True:
+            try:
+                valor = float(input("Insira o valor: "))
+                if valor <= 0:
+                    print("O valor deve ser maior que zero.")
+                else:
+                    break
+            except ValueError:
+                print("Valor inválido. Digite um número.")
 
         while True:
             print("Tipos de pagamentos:")
@@ -73,8 +86,25 @@ class TelaDespesa:
             except ValueError:
                 print("Operação não reconhecida, por favor digite uma opção válida")
 
-        mes = int(input("Insira o mês de referência: "))
-        ano = int(input("Insira o ano de referência: "))
+        while True:
+            try:
+                mes = int(input("Insira o mês de referência (1 a 12): "))
+                if 1 <= mes <= 12:
+                    break
+                else:
+                    print("Mês inválido. Digite um número entre 1 e 12.")
+            except ValueError:
+                print("Valor inválido. Digite um número inteiro.")
+
+        while True:
+            try:
+                ano = int(input("Insira o ano de referência (2000 a 2100): "))
+                if 2000 <= ano <= 2100:
+                    break
+                else:
+                    print("Ano inválido. Digite um número entre 2000 e 2100.")
+            except ValueError:
+                print("Valor inválido. Digite um número inteiro.")
 
 
         tem_nota = input("Deseja adicionar nota fiscal a essa despesa? (s/n): ").strip().lower()
@@ -93,6 +123,45 @@ class TelaDespesa:
 
         for count, despesa in enumerate(despesas):
             print(f"Despesa ({(count)}) - {despesa}")
+
+    def mostrar_despesas_e_selecionar(self, despesas: List[str]) -> int:
+        print("-------- Selecione uma Despesa --------")
+        for idx, d in enumerate(despesas):
+            print(f"({idx}) - {d}")
+        while True:
+            try:
+                escolha = int(input("Digite o número da despesa que deseja selecionar: "))
+                if 0 <= escolha < len(despesas):
+                    return escolha
+                else:
+                    print("Índice fora do intervalo. Tente novamente.")
+            except ValueError:
+                print("Valor inválido. Digite um número inteiro.")
+
+
+    def despesas_mes_ano(self) -> tuple[int, int]:
+        while True:
+            try:
+                mes = int(input("Digite o mês (1 a 12): "))
+                if 1 <= mes <= 12:
+                    break
+                else:
+                    print("Mês inválido. Deve estar entre 1 e 12.")
+            except ValueError:
+                print("Valor inválido. Digite um número inteiro.")
+
+        while True:
+            try:
+                ano = int(input("Digite o ano (2000 a 2100): "))
+                if 2000 <= ano <= 2100:
+                    break
+                else:
+                    print("Ano inválido. Deve estar entre 2000 e 2100.")
+            except ValueError:
+                print("Valor inválido. Digite um número inteiro.")
+
+        return mes, ano
+
 
     def mostrar_menu_relatorios(self):
         print("-------- Relatórios em Despesa --------")

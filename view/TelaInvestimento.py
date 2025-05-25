@@ -48,9 +48,35 @@ class TelaInvestimento:
             except ValueError:
                 print("Operação não reconhecida, por favor digite uma opção válida")
 
-        valor = float(input("Insira o valor: "))
-        mes = int(input("Insira o mês correspondente: "))
-        ano = int(input("Insira o ano correspondente: "))
+        while True:
+            try:
+                valor = float(input("Insira o valor: "))
+                if valor <= 0:
+                    print("O valor deve ser maior que zero.")
+                else:
+                    break
+            except ValueError:
+                print("Valor inválido. Digite um número.")
+
+        while True:
+            try:
+                mes = int(input("Insira o mês de referência (1 a 12): "))
+                if 1 <= mes <= 12:
+                    break
+                else:
+                    print("Mês inválido. Digite um número entre 1 e 12.")
+            except ValueError:
+                print("Valor inválido. Digite um número inteiro.")
+
+        while True:
+            try:
+                ano = int(input("Insira o ano de referência (2000 a 2100): "))
+                if 2000 <= ano <= 2100:
+                    break
+                else:
+                    print("Ano inválido. Digite um número entre 2000 e 2100.")
+            except ValueError:
+                print("Valor inválido. Digite um número inteiro.")
 
         return ativo, tipo, valor, mes, ano
 

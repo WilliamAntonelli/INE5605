@@ -26,31 +26,48 @@ class ControladorDespesa:
                         case 3:
                             self.__tela_despesa.mostrar_despesas(self.lista_despesa_string())
                         case 4:
-                            self.excluir_despesa()
+                            self.mostrar_despesas_por_mes()
                         case 5:
-                            self.relatorios_despesa()
+                            self.excluir_despesa()
                         case 6:
+                            self.relatorios_despesa()
+                        case 7:
                             break
                         case _:
                             print("Operação não reconhecida, por favor digite uma opção válida")
             except ValueError:
-                print("Operação não reconhecida, por favor digite uma opção válida")
+                print("Operação não reconhecida, por favor digita uma opção válida")
+            except Exception as e:
+                print(f"Ocorreu um erro inesperado: {str(e)}")
 
     def adicionar_despesa(self):
+        try:
+            categoria = self.__categorias.get_categorias()
 
-        categoria = self.__categorias.get_categorias()
+            if not categoria:
+                print("Nenhuma categoria cadastrado. Cadastre uma categoria antes de criar uma despesa.")
+                return
 
-        if not categoria:
-            print("Nenhuma categoria cadastrado. Cadastre uma categoria antes de criar uma despesa.")
-            return
+            tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
+            (self.__tela_despesa.mostrar_cadastrar_nova_despesa(categoria))
 
-        tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
-        (self.__tela_despesa.mostrar_cadastrar_nova_despesa(categoria))
+            if not codigo or not isinstance(codigo, str):
+                raise ValueError("Código da nota fiscal inválido. Deve ser uma string não vazia.")
+            if arquivo is not None and not isinstance(arquivo, str):
+                raise ValueError("Arquivo da nota fiscal deve ser uma string ou None.")
 
-        nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
-        self.__usuario.despesas.append(nova_despesa)
+            nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
+            self.__usuario.despesas.append(nova_despesa)
 
-        print("Despesa criada com sucesso!")
+            print("Despesa criada com sucesso!")
+
+
+        except ValueError as ve:
+            print(f"Erro de valor: {ve}")
+        except TypeError as te:
+            print(f"Erro de tipo: {te}")
+        except Exception as e:
+            print(f"Ocorreu um erro ao adicionar a despesa: {e}")
 
 
     def lista_despesa_string(self) -> List[str]:
@@ -59,6 +76,25 @@ class ControladorDespesa:
                  f"| Informações de nota fiscal: "
                  f"{despesa.nota_fiscal.codigo} | {despesa.nota_fiscal.arquivo}")
             for despesa in self.__usuario.despesas]
+
+    def mostrar_despesas_por_mes(self):
+        try:
+            mes, ano = self.__tela_despesa.despesas_mes_ano()
+            despesas_filtradas = [despesa for despesa in self.__usuario.despesas
+                                  if despesa.mes == mes and despesa.ano == ano]
+
+            if not despesas_filtradas:
+                print(f"Nenhuma despesa encontrada para {mes:02}/{ano}.")
+                return
+
+            despesas_str = [(f"{d.tipo_despesa.name} | {d.categoria.nome} | {d.local} "
+                             f"| R$ {d.valor:.2f} | {d.tipo_pagamento.name} | Mês: {d.mes} | Ano: {d.ano} "
+                             f"| Nota fiscal: {d.nota_fiscal.codigo} | {d.nota_fiscal.arquivo}")
+                            for d in despesas_filtradas]
+
+            self.__tela_despesa.mostrar_despesas(despesas_str)
+        except Exception as e:
+            print(f"Erro ao buscar despesas por mês: {e}")
 
 
     def buscar_despesa_por_idx(self, idx: int) -> Despesa | None:
@@ -83,7 +119,7 @@ class ControladorDespesa:
                     self.__tela_despesa.mostrar_cadastrar_nova_despesa(self.__categorias.get_categorias())
 
                 nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
-                self.__usuario.despesas[idx] = nova_despesa  # Atualiza a despesa na lista do usuário
+                self.__usuario.despesas[idx] = nova_despesa
 
                 print("Despesa alterada com sucesso!")
             else:
@@ -139,7 +175,7 @@ class ControladorDespesa:
             print("Nenhuma despesa cadastrada.")
             return
 
-        valores = [despesa.valor for despesa in self.__despesas]
+        valores = [despesa.valor for despesa in self.__usuario.despesas]
         maior = max(valores)
         menor = min(valores)
         media = sum(valores) / len(valores)
