@@ -1,5 +1,6 @@
 from view.TelaTransferencia import TelaTransferencia
 from exceptions.InvalidInputException import InvalidInputException
+from typing import List
 
 class ControladorTransferencia:
 
@@ -46,8 +47,9 @@ class ControladorTransferencia:
     def cadastrar_transferencia(self):
         while True:
             try:
-
-               ...
+               familiares_list = self.__controlador_sistema.usuario()
+                
+                
                 
             except (ValueError, InvalidInputException):
                 print("Dados do usuário não inválidos, por favor coloque as informações de acordo com o requerido")

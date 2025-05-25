@@ -31,8 +31,13 @@ class ControladorUsuario:
                         break
                     case _:
                         print("Operação não reconhecida, por favor digita uma opção válida")
+
+            except InvalidInputException as e:
+                print(e)
+                
             except ValueError:
                 print("Operação não reconhecida, por favor digita uma opção válida")
+                raise ValueError("")
 
 
     def get_usuario_in_dict(self) -> dict:
@@ -65,6 +70,9 @@ class ControladorUsuario:
                 }
                 
                 opcao_menu, novo_campo = self.__tela_usuario.mostrar_informacoes_edit()
+
+                if int(opcao_menu) == 8:
+                    break
                 
                 field = fiels_user_to_setters.get(int(opcao_menu))
                 if field is None:
@@ -74,9 +82,12 @@ class ControladorUsuario:
                 setattr(self.__usuario, field, novo_campo)
                 break
 
-
             except ValueError:
                 print("Operação não reconhecida, por favor digita uma opção válida")
+
+            except Exception as e:
+                print("Algo de errado ocorreu durante a execução do programa")
+                print(e)
 
     def cadastrar_usuario(self):
         while self.__usuario is None:

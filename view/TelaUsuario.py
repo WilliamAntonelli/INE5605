@@ -47,15 +47,20 @@ class TelaUusuario:
     def mostrar_informacoes_edit(self) -> None:
 
         print("-------- Qual dados você deseja alterar ? ----------")
-        nome = print("(1) Nome: ")
-        profissao = print("(2) Profissão: ")
-        idade = print("(3) Idade: ")
-        genero = print("(4) Gênero: ")
-        email = print("(5) email: ")
-        senha = print("(6) Senha: ")
-        renda = print("(7) Renda: ")
+        print("(1) Nome: ")
+        print("(2) Profissão: ")
+        print("(3) Idade: ")
+        print("(4) Gênero: ")
+        print("(5) email: ")
+        print("(6) Senha: ")
+        print("(7) Renda: ")
+        print("(8) Cancelar edição")
         
         opcao_menu = input("Qual o campo você deseja alterar ?")
+
+        if int(opcao_menu) == 8:
+             return opcao_menu, None
+        
         novo_campo = input("Digite o novo valor: ")
         return opcao_menu, novo_campo
         

@@ -1,5 +1,3 @@
-
-
 from controller.ControladorCategoria import ControladorCategoria
 from controller.ControladorNotaFiscal import ControladorNotaFiscal
 from controller.ControladorMeta import ControladorMeta
@@ -37,17 +35,21 @@ class ControladorSistema:
             8: self.__controlador_nota_fiscal
         }
 
-        try:
+        while True:
+            try:
 
-            while True:
                 opca_menu = self.__tela_sistema.mostrar_tela_inicial()
-                acao = dict_opcoes_para_execucao.get(int(opca_menu))
-                if acao is None:
+                if int(opca_menu) == 9:
+                    break
+                
+                controlador = dict_opcoes_para_execucao.get(int(opca_menu))
+                if controlador is None:
                     print("Operação não reconhecida, por favor digita uma opção válida")
-                else:
-                    acao.executar()
-                    
-        except ValueError:
-            print("Operação não reconhecida, por favor digita uma opção válida")
+                    continue
+                
+                controlador.executar()
+                        
+            except ValueError:
+                print("Operação não reconhecida, por favor digita uma opção válida")
 
 

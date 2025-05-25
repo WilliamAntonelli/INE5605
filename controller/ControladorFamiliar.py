@@ -23,7 +23,7 @@ class ControladorFamiliar:
                     case 1:
                         self.adcionar_familiar()
                     case 2:
-                        self.__tela_familiar.mostrar_informacoes(self.lista_categoria_string())
+                        self.__tela_familiar.mostrar_informacoes(self.lista_famialiares())
                     case 3:
                         ...
                     case 4:
