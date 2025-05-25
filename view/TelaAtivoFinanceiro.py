@@ -18,12 +18,12 @@ class TelaAtivoFinanceiro:
 
         while True:
             print("Classes disponíveis:")
-            for idx, c in enumerate(ClasseAtivo):
-                print(f"({idx}) - {c.name}")
+            for indice, classe in enumerate(ClasseAtivo):
+                print(f"({indice}) - {classe.name}")
             try:
-                classe_idx = int(input("Escolha a classe do ativo: "))
-                if 0 <= classe_idx < len(ClasseAtivo):
-                    classe = list(ClasseAtivo)[classe_idx]
+                classe_por_indice = int(input("Escolha a classe do ativo: "))
+                if 0 <= classe_por_indice < len(ClasseAtivo):
+                    classe = list(ClasseAtivo)[classe_por_indice]
                     print(f"Você escolheu: {classe.name}")
                     break
                 else:
@@ -33,12 +33,12 @@ class TelaAtivoFinanceiro:
 
         while True:
             print("Tipos disponíveis:")
-            for idx, t in enumerate(TipoAtivo):
-                print(f"({idx}) - {t.name}")
+            for indice, tipo in enumerate(TipoAtivo):
+                print(f"({indice}) - {tipo.name}")
             try:
-                tipo_idx = int(input("Escolha o tipo do ativo: "))
-                if 0 <= tipo_idx < len(TipoAtivo):
-                    tipo = list(TipoAtivo)[tipo_idx]
+                tipo_por_indice = int(input("Escolha o tipo do ativo: "))
+                if 0 <= tipo_por_indice < len(TipoAtivo):
+                    tipo = list(TipoAtivo)[tipo_por_indice]
                     print(f"Você escolheu: {tipo.name}")
                     break
                 else:
@@ -54,5 +54,5 @@ class TelaAtivoFinanceiro:
     def mostrar_ativos_financeiros(self, ativos_financeiros: List[str]) -> None:
         print("-------- Ativos Financeiros --------")
 
-        for count, ativo_financeiro in enumerate(ativos_financeiros):
-            print(f"Ativos Financeiros({(count)}) - {ativo_financeiro}")
+        for indice, ativo_financeiro in enumerate(ativos_financeiros):
+            print(f"Ativos Financeiros({(indice)}) - {ativo_financeiro}")

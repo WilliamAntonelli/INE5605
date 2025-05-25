@@ -11,21 +11,23 @@ class TelaInvestimento:
         print("(1) Cadastrar novo Investimento")
         print("(2) Listar Investimentos")
         print("(3) Mostrar Saldo")
-        print("(4) Voltar para o Menu Principal")
+        print("(4) Excluir Investimento")
+        print("(5) Voltar para o Menu Principal")
         return input("Escolha uma opção: ")
 
-    def mostrar_cadastrar_novo_investimento(self, ativos_disponiveis: List[AtivoFinanceiro]) -> tuple[AtivoFinanceiro, TipoInvestimento, float]:
+    def mostrar_cadastrar_novo_investimento(self, ativos_disponiveis: List[AtivoFinanceiro]) -> tuple[
+        AtivoFinanceiro, TipoInvestimento, float, int, int]:
         print("-------- Insira novo Investimento --------")
 
         while True:
             print("Ativos Financeiros disponíveis:")
-            for idx, ativo in enumerate(ativos_disponiveis):
-                print(f"({idx}) - {ativo.nome}")
+            for indice, ativo in enumerate(ativos_disponiveis):
+                print(f"({indice}) - {ativo.nome}")
 
             try:
-                ativo_idx = int(input("Escolha o ativo: "))
-                if 0 <= ativo_idx < len(ativos_disponiveis):
-                    ativo = ativos_disponiveis[ativo_idx]
+                ativo_por_indice = int(input("Escolha o ativo: "))
+                if 0 <= ativo_por_indice < len(ativos_disponiveis):
+                    ativo = ativos_disponiveis[ativo_por_indice]
                     print(f"Você escolheu: {ativo.nome}")
                     break
                 else:
@@ -35,12 +37,12 @@ class TelaInvestimento:
 
         while True:
             print("Tipos disponíveis:")
-            for idx, t in enumerate(TipoInvestimento):
-                print(f"({idx}) - {t.name}")
+            for indice, tipo in enumerate(TipoInvestimento):
+                print(f"({indice}) - {tipo.name}")
             try:
-                tipo_idx = int(input("Escolha o tipo de investimento: "))
-                if 0 <= tipo_idx < len(TipoInvestimento):
-                    tipo = list(TipoInvestimento)[tipo_idx]
+                tipo_por_indice = int(input("Escolha o tipo de investimento: "))
+                if 0 <= tipo_por_indice < len(TipoInvestimento):
+                    tipo = list(TipoInvestimento)[tipo_por_indice]
                     print(f"Você escolheu: {tipo.name}")
                     break
                 else:
@@ -91,5 +93,5 @@ class TelaInvestimento:
         if not investimentos:
             print("Nenhum investimento cadastrado.")
 
-        for count, investimento in enumerate(investimentos):
-            print(f"Investimento({count}) - {investimento}")
+        for indice, investimento in enumerate(investimentos):
+            print(f"Investimento({indice}) - {investimento}")

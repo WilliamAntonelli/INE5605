@@ -15,10 +15,6 @@ class Despesa:
         self.__nota_fiscal = NotaFiscal(codigo, arquivo)
 
 
-    def adicionar_nota_fiscal(self, codigo, arquivo):
-        nota = NotaFiscal(codigo, arquivo)
-        self.__nota_fiscal = nota
-
     @property
     def tipo_despesa(self):
         return self.__tipo_despesa
@@ -92,6 +88,5 @@ class Despesa:
     def nota_fiscal(self):
         return self.__nota_fiscal
 
-    def adicionar_nota_fiscal(self, nome_nota, arquivo):
-        nota = NotaFiscal(nome_nota, arquivo)
-        self.__nota_fiscal = nota
+    def adicionar_nota_fiscal(self, codigo, arquivo):
+        self.__nota_fiscal = NotaFiscal(codigo, arquivo)

@@ -4,7 +4,6 @@ from typing import List
 from controller.ControladorUsuario import ControladorUsuario
 from datetime import datetime
 
-
 class ControladorMeta:
     def __init__(self, controlador_usuario: ControladorUsuario):
         self.__usuario = controlador_usuario
@@ -23,6 +22,8 @@ class ControladorMeta:
                     case 2:
                         self.__tela_meta.mostrar_metas(self.lista_meta_string())
                     case 3:
+                        self.excluir_meta()
+                    case 4:
                         break
                     case _:
                         print("Operação não reconhecida, por favor digite uma opção válida")
@@ -46,7 +47,7 @@ class ControladorMeta:
                 print("Data inválida! Use o formato DD/MM/AAAA.")
                 return
 
-            if any(meta.data == data for meta in self.__usuario.metas):
+            if any(meta.data_vencimento == data for meta in self.__usuario.metas):
                 print(f"Já existe uma meta com data de vencimento '{data}'.")
                 return
 
@@ -64,3 +65,20 @@ class ControladorMeta:
 
     def lista_meta_string(self) -> List[str]:
         return [f"Objetivo: R${meta.valor_objetivo:.2f}, Vencimento: {meta.data_vencimento.strftime('%d/%m/%Y')}" for meta in self.__usuario.metas]
+
+
+    def excluir_meta(self):
+        if not self.__usuario.metas:
+            print("Não há metas para excluir.")
+            return
+
+        self.__tela_meta.mostrar_metas(self.lista_meta_string())
+        try:
+            indice = int(input("Digite o número da meta que deseja excluir: "))
+            if 0 <= indice < len(self.__usuario.metas):
+                removida = self.__usuario.metas.pop(indice)
+                print(f"Meta com valor R$ {removida.valor_objetivo:.2f} excluída com sucesso.")
+            else:
+                print("Índice inválido.")
+        except ValueError:
+            print("Por favor, digite um número válido.")

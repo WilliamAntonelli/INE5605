@@ -24,12 +24,12 @@ class TelaDespesa:
 
         while True:
             print("Tipos disponíveis:")
-            for idx, c in enumerate(TipoDespesa):
-                print(f"({idx}) - {c.name}")
+            for indice, tipo in enumerate(TipoDespesa):
+                print(f"({indice}) - {tipo.name}")
             try:
-                tipo_idx = int(input("Escolha o tipo de despesa: "))
-                if 0 <= tipo_idx < len(TipoDespesa):
-                    tipo = list(TipoDespesa)[tipo_idx]
+                tipo_por_indice = int(input("Escolha o tipo de despesa: "))
+                if 0 <= tipo_por_indice < len(TipoDespesa):
+                    tipo = list(TipoDespesa)[tipo_por_indice]
                     print(f"Você escolheu: {tipo.name}")
                     break
                 else:
@@ -40,13 +40,13 @@ class TelaDespesa:
 
         while True:
             print("Categorias:")
-            for idx, categoria in enumerate(categorias):
-                print(f"({idx}) - {categoria.nome}")
+            for indice, categoria in enumerate(categorias):
+                print(f"({indice}) - {categoria.nome}")
 
             try:
-                categoria_idx = int(input("Escolha a categoria: "))
-                if 0 <= categoria_idx < len(categorias):
-                    categoria = categorias[categoria_idx]
+                categoria_por_indice = int(input("Escolha a categoria: "))
+                if 0 <= categoria_por_indice < len(categorias):
+                    categoria = categorias[categoria_por_indice]
                     print(f"Você escolheu: {categoria.nome}")
                     break
                 else:
@@ -73,12 +73,12 @@ class TelaDespesa:
 
         while True:
             print("Tipos de pagamentos:")
-            for idx, t in enumerate(TipoPagamento):
-                print(f"({idx}) - {t.name}")
+            for indice, tipo in enumerate(TipoPagamento):
+                print(f"({indice}) - {tipo.name}")
             try:
-                forma_idx = int(input("Escolha o tipo de pagamento: "))
-                if 0 <= forma_idx < len(TipoPagamento):
-                    forma = list(TipoPagamento)[forma_idx]
+                forma_por_indice = int(input("Escolha o tipo de pagamento: "))
+                if 0 <= forma_por_indice < len(TipoPagamento):
+                    forma = list(TipoPagamento)[forma_por_indice]
                     print(f"Você escolheu: {forma.name}")
                     break
                 else:
@@ -121,13 +121,13 @@ class TelaDespesa:
     def mostrar_despesas(self, despesas: List[str]) -> None:
         print("-------- Despesas --------")
 
-        for count, despesa in enumerate(despesas):
-            print(f"Despesa ({(count)}) - {despesa}")
+        for indice, despesa in enumerate(despesas):
+            print(f"Despesa ({(indice)}) - {despesa}")
 
     def mostrar_despesas_e_selecionar(self, despesas: List[str]) -> int:
         print("-------- Selecione uma Despesa --------")
-        for idx, d in enumerate(despesas):
-            print(f"({idx}) - {d}")
+        for indice, d in enumerate(despesas):
+            print(f"({indice}) - {d}")
         while True:
             try:
                 escolha = int(input("Digite o número da despesa que deseja selecionar: "))
@@ -139,7 +139,7 @@ class TelaDespesa:
                 print("Valor inválido. Digite um número inteiro.")
 
 
-    def despesas_mes_ano(self) -> tuple[int, int]:
+    def mostrar_despesas_mes_ano(self) -> tuple[int, int]:
         while True:
             try:
                 mes = int(input("Digite o mês (1 a 12): "))

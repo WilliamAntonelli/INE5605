@@ -26,7 +26,7 @@ class ControladorDespesa:
                         case 3:
                             self.__tela_despesa.mostrar_despesas(self.lista_despesa_string())
                         case 4:
-                            self.mostrar_despesas_por_mes()
+                            self.listar_despesas_por_mes()
                         case 5:
                             self.excluir_despesa()
                         case 6:
@@ -45,16 +45,16 @@ class ControladorDespesa:
             categoria = self.__categorias.get_categorias()
 
             if not categoria:
-                print("Nenhuma categoria cadastrado. Cadastre uma categoria antes de criar uma despesa.")
+                print("Nenhuma categoria cadastrada. Cadastre uma categoria antes de criar uma despesa.")
                 return
 
             tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
             (self.__tela_despesa.mostrar_cadastrar_nova_despesa(categoria))
 
             if not codigo or not isinstance(codigo, str):
-                raise ValueError("Código da nota fiscal inválido. Deve ser uma string não vazia.")
+                raise ValueError("Código da nota fiscal inválido. Você deve digitar o código.")
             if arquivo is not None and not isinstance(arquivo, str):
-                raise ValueError("Arquivo da nota fiscal deve ser uma string ou None.")
+                raise ValueError("Arquivo inválido. Você deve digitar o nome do arquivo.")
 
             nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
             self.__usuario.despesas.append(nova_despesa)
@@ -70,40 +70,28 @@ class ControladorDespesa:
             print(f"Ocorreu um erro ao adicionar a despesa: {e}")
 
 
-    def lista_despesa_string(self) -> List[str]:
-        return [(f"{despesa.tipo_despesa.name} | {despesa.categoria.nome} | {despesa.local} "
-                 f"| R$ {despesa.valor:.2f} | {despesa.tipo_pagamento.name} | Mês: {despesa.mes} | Ano: {despesa.ano}"
-                 f"| Informações de nota fiscal: "
-                 f"{despesa.nota_fiscal.codigo} | {despesa.nota_fiscal.arquivo}")
-            for despesa in self.__usuario.despesas]
+    def lista_despesa_string(self, despesas: List = None) -> List[str]:
+        if despesas is None:
+            despesas = self.__usuario.despesas
 
-    def mostrar_despesas_por_mes(self):
+        return [(f"{d.tipo_despesa.name} | {d.categoria.nome} | {d.local} "
+                 f"| R$ {d.valor:.2f} | {d.tipo_pagamento.name} | Mês: {d.mes} | Ano: {d.ano} "
+                 f"| Informações de nota fiscal: {d.nota_fiscal.codigo} | {d.nota_fiscal.arquivo}")
+                for d in despesas]
+
+    def listar_despesas_por_mes(self):
         try:
-            mes, ano = self.__tela_despesa.despesas_mes_ano()
-            despesas_filtradas = [despesa for despesa in self.__usuario.despesas
-                                  if despesa.mes == mes and despesa.ano == ano]
+            mes, ano = self.__tela_despesa.mostrar_despesas_mes_ano()
+            despesas_filtradas = [d for d in self.__usuario.despesas if d.mes == mes and d.ano == ano]
 
             if not despesas_filtradas:
-                print(f"Nenhuma despesa encontrada para {mes:02}/{ano}.")
+                print(f"Nenhuma despesa encontrada para {mes}/{ano}.")
                 return
 
-            despesas_str = [(f"{d.tipo_despesa.name} | {d.categoria.nome} | {d.local} "
-                             f"| R$ {d.valor:.2f} | {d.tipo_pagamento.name} | Mês: {d.mes} | Ano: {d.ano} "
-                             f"| Nota fiscal: {d.nota_fiscal.codigo} | {d.nota_fiscal.arquivo}")
-                            for d in despesas_filtradas]
-
+            despesas_str = self.lista_despesa_string(despesas_filtradas)
             self.__tela_despesa.mostrar_despesas(despesas_str)
         except Exception as e:
             print(f"Erro ao buscar despesas por mês: {e}")
-
-
-    def buscar_despesa_por_idx(self, idx: int) -> Despesa | None:
-        if 0 <= idx < len(self.__despesas):
-            return self.__usuario.despesas[idx]
-        return None
-
-    def buscar_despesas_por_local(self, local: str) -> List[Despesa]:
-        return [d for d in self.__usuario.despesas if d.local.lower() == local.lower()]
 
 
     def alterar_despesa(self):
@@ -112,14 +100,14 @@ class ControladorDespesa:
                 print("Nenhuma despesa cadastrada para alterar.")
                 return
 
-            idx = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string())
+            indice = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string())
 
-            if 0 <= idx < len(self.__usuario.despesas):
+            if 0 <= indice < len(self.__usuario.despesas):
                 tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
                     self.__tela_despesa.mostrar_cadastrar_nova_despesa(self.__categorias.get_categorias())
 
                 nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
-                self.__usuario.despesas[idx] = nova_despesa
+                self.__usuario.despesas[indice] = nova_despesa
 
                 print("Despesa alterada com sucesso!")
             else:
@@ -135,10 +123,10 @@ class ControladorDespesa:
                 print("Nenhuma despesa cadastrada para excluir.")
                 return
 
-            idx = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string())
+            indice = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string())
 
-            if 0 <= idx < len(self.__usuario.despesas):
-                despesa_excluida = self.__usuario.despesas.pop(idx)
+            if 0 <= indice < len(self.__usuario.despesas):
+                despesa_excluida = self.__usuario.despesas.pop(indice)
                 print(f"Despesa '{despesa_excluida.local}' removida com sucesso!")
             else:
                 print("Índice inválido. Nenhuma despesa foi excluída.")

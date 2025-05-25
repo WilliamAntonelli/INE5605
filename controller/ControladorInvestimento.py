@@ -27,6 +27,8 @@ class ControladorInvestimento:
                         case 3:
                             self.__tela_investimento.mostrar_saldo(self.mostrar_saldo_string())
                         case 4:
+                            self.excluir_investimento()
+                        case 5:
                             break
                         case _:
                             print("Operação não reconhecida, por favor digite uma opção válida")
@@ -57,7 +59,7 @@ class ControladorInvestimento:
                     print(f"DÉBITO registrado. Valor debitado: R$ {valor:.2f}")
                 else:
                     print("Saldo insuficiente para realizar o débito. Débito não registrado.")
-                    self.__investimentos.pop()
+                    self.__usuario.investimentos.pop()
                     return
 
             print("Investimento criado com sucesso!")
@@ -77,3 +79,25 @@ class ControladorInvestimento:
     def lista_investimento_string(self) -> List[str]:
         return [(f"{investimento.ativo.nome} - Valor: R$ {investimento.valor:.2f} - Mês: {investimento.mes}"
                  f" - Ano: {investimento.ano}") for investimento in self.__usuario.investimentos]
+
+    def excluir_investimento(self):
+        if not self.__usuario.investimentos:
+            print("Não há investimentos para excluir.")
+            return
+
+        self.__tela_investimento.mostrar_investimentos(self.lista_investimento_string())
+        try:
+            indice = int(input("Digite o número do investimento que deseja excluir: "))
+            if 0 <= indice < len(self.__usuario.investimentos):
+                investimento = self.__usuario.investimentos.pop(indice)
+
+                if investimento.tipo_investimento.name == "CREDITO":
+                    self.__saldo -= investimento.valor
+                elif investimento.tipo_investimento.name == "DEBITO":
+                    self.__saldo += investimento.valor
+
+                print("Investimento excluído com sucesso.")
+            else:
+                print("Índice inválido.")
+        except ValueError:
+            print("Por favor, digite um número válido.")
