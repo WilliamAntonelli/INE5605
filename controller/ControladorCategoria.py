@@ -20,7 +20,7 @@ class ControladorCategoria:
                 opcao_menu = self.__tela_categoria.mostrar_tela_inicial()
                 match int(opcao_menu):
                     case 1:
-                        self.adcionar_categorias()
+                        self.adcionar_categoria()
                     case 2:
                         self.__tela_categoria.mostrar_categorias(self.lista_categoria_string())
                     case 3:

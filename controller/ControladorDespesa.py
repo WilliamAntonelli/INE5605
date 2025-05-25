@@ -5,7 +5,7 @@ from controller.ControladorCategoria import ControladorCategoria
 from controller.ControladorUsuario import ControladorUsuario
 
 class ControladorDespesa:
-    def __init__(self, controlador_categoria: ControladorCategoria, controlador_sistema):
+    def __init__(self, controlador_categoria, controlador_sistema):
         self.__controlador_sistema = controlador_sistema
         self.__tela_despesa = TelaDespesa()
         self.__categorias = controlador_categoria
@@ -57,7 +57,7 @@ class ControladorDespesa:
                 raise ValueError("Arquivo inválido. Você deve digitar o nome do arquivo.")
 
             nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
-            self.__usuario.despesas.append(nova_despesa)
+            self.__controlador_sistema.controlador_usuario.usuario.despesas.append(nova_despesa)
 
             print("Despesa criada com sucesso!")
 
@@ -72,7 +72,7 @@ class ControladorDespesa:
 
     def lista_despesa_string(self, despesas: List = None) -> List[str]:
         if despesas is None:
-            despesas = self.__usuario.despesas
+            despesas = self.__controlador_sistema.controlador_usuario.usuario.despesas
 
         return [(f"{d.tipo_despesa.name} | {d.categoria.nome} | {d.local} "
                  f"| R$ {d.valor:.2f} | {d.tipo_pagamento.name} | Mês: {d.mes} | Ano: {d.ano} "
@@ -82,7 +82,7 @@ class ControladorDespesa:
     def listar_despesas_por_mes(self):
         try:
             mes, ano = self.__tela_despesa.mostrar_despesas_mes_ano()
-            despesas_filtradas = [d for d in self.__usuario.despesas if d.mes == mes and d.ano == ano]
+            despesas_filtradas = [d for d in self.__controlador_sistema.controlador_usuario.usuario.despesas if d.mes == mes and d.ano == ano]
 
             if not despesas_filtradas:
                 print(f"Nenhuma despesa encontrada para {mes}/{ano}.")
@@ -96,18 +96,18 @@ class ControladorDespesa:
 
     def alterar_despesa(self):
         try:
-            if not self.__usuario.despesas:
+            if not self.__controlador_sistema.controlador_usuario.usuario.despesas:
                 print("Nenhuma despesa cadastrada para alterar.")
                 return
 
             indice = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string())
 
-            if 0 <= indice < len(self.__usuario.despesas):
+            if 0 <= indice < len(self.__controlador_sistema.controlador_usuario.usuario.despesas):
                 tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo = \
                     self.__tela_despesa.mostrar_cadastrar_nova_despesa(self.__categorias.get_categorias())
 
                 nova_despesa = Despesa(tipo, categoria, local, valor, forma, mes, ano, codigo, arquivo)
-                self.__usuario.despesas[indice] = nova_despesa
+                self.__controlador_sistema.controlador_usuario.usuario.despesas[indice] = nova_despesa
 
                 print("Despesa alterada com sucesso!")
             else:
@@ -119,14 +119,14 @@ class ControladorDespesa:
 
     def excluir_despesa(self):
         try:
-            if not self.__usuario.despesas:
+            if not self.__controlador_sistema.controlador_usuario.usuario.despesas:
                 print("Nenhuma despesa cadastrada para excluir.")
                 return
 
             indice = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string())
 
-            if 0 <= indice < len(self.__usuario.despesas):
-                despesa_excluida = self.__usuario.despesas.pop(indice)
+            if 0 <= indice < len(self.__controlador_sistema.controlador_usuario.usuario.despesas):
+                despesa_excluida = self.__controlador_sistema.controlador_usuario.usuario.despesas.pop(indice)
                 print(f"Despesa '{despesa_excluida.local}' removida com sucesso!")
             else:
                 print("Índice inválido. Nenhuma despesa foi excluída.")
@@ -149,7 +149,7 @@ class ControladorDespesa:
 
     def total_por_categoria(self):
         totais = {}
-        for despesa in self.__usuario.despesas:
+        for despesa in self.__controlador_sistema.controlador_usuario.usuario.despesas:
             nome_categoria = despesa.categoria.nome
             if nome_categoria in totais:
                 totais[nome_categoria] += despesa.valor
@@ -159,11 +159,11 @@ class ControladorDespesa:
         self.__tela_despesa.mostrar_relatorio_total_por_categoria(totais)
 
     def estatisticas_despesas(self):
-        if not self.__usuario.despesas:
+        if not self.__controlador_sistema.controlador_usuario.usuario.despesas:
             print("Nenhuma despesa cadastrada.")
             return
 
-        valores = [despesa.valor for despesa in self.__usuario.despesas]
+        valores = [despesa.valor for despesa in self.__controlador_sistema.controlador_usuario.usuario.despesas]
         maior = max(valores)
         menor = min(valores)
         media = sum(valores) / len(valores)
