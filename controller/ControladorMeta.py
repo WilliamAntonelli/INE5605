@@ -1,12 +1,11 @@
 from model.meta import Meta
 from view.TelaMeta import TelaMeta
 from typing import List
-from controller.ControladorUsuario import ControladorUsuario
 from datetime import datetime
 
 class ControladorMeta:
-    def __init__(self, controlador_usuario: ControladorUsuario):
-        self.__usuario = controlador_usuario
+    def __init__(self, controlador_sistema):
+        self.__controlador_sistema = controlador_sistema
         self.__tela_meta = TelaMeta()
 
     def executar(self):
@@ -47,12 +46,12 @@ class ControladorMeta:
                 print("Data inválida! Use o formato DD/MM/AAAA.")
                 return
 
-            if any(meta.data_vencimento == data for meta in self.__usuario.metas):
+            if any(meta.data_vencimento == data for meta in self.__controlador_sistema.controlador_usuario.usuario.metas):
                 print(f"Já existe uma meta com data de vencimento '{data}'.")
                 return
 
             nova_meta = Meta(valor, data)
-            self.__usuario.metas.append(nova_meta)
+            self.__controlador_sistema.controlador_usuario.usuario.metas.append(nova_meta)
             print("Meta cadastrada com sucesso!")
 
         except ValueError:
@@ -64,19 +63,19 @@ class ControladorMeta:
 
 
     def lista_meta_string(self) -> List[str]:
-        return [f"Objetivo: R${meta.valor_objetivo:.2f}, Vencimento: {meta.data_vencimento.strftime('%d/%m/%Y')}" for meta in self.__usuario.metas]
+        return [f"Objetivo: R${meta.valor_objetivo:.2f}, Vencimento: {meta.data_vencimento.strftime('%d/%m/%Y')}" for meta in self.__controlador_sistema.controlador_usuario.usuario.metas]
 
 
     def excluir_meta(self):
-        if not self.__usuario.metas:
+        if not self.__controlador_sistema.controlador_usuario.usuario.metas:
             print("Não há metas para excluir.")
             return
 
         self.__tela_meta.mostrar_metas(self.lista_meta_string())
         try:
             indice = int(input("Digite o número da meta que deseja excluir: "))
-            if 0 <= indice < len(self.__usuario.metas):
-                removida = self.__usuario.metas.pop(indice)
+            if 0 <= indice < len(self.__controlador_sistema.controlador_usuario.usuario.metas):
+                removida = self.__controlador_sistema.controlador_usuario.usuario.metas.pop(indice)
                 print(f"Meta com valor R$ {removida.valor_objetivo:.2f} excluída com sucesso.")
             else:
                 print("Índice inválido.")

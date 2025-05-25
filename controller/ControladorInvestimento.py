@@ -5,8 +5,8 @@ from controller.ControladorAtivoFinanceiro import ControladorAtivoFinanceiro
 from controller.ControladorUsuario import ControladorUsuario
 
 class ControladorInvestimento:
-    def __init__(self, controlador_ativo_financeiro: ControladorAtivoFinanceiro, controlador_usuario: ControladorUsuario):
-        self.__usuario = controlador_usuario
+    def __init__(self, controlador_ativo_financeiro, controlador_sistema):
+        self.__controlador_sistema = controlador_sistema
         self.__tela_investimento = TelaInvestimento()
         self.__ativos_financeiros = controlador_ativo_financeiro
         self.__saldo = 0
@@ -48,7 +48,7 @@ class ControladorInvestimento:
             ativo, tipo, valor, mes, ano = self.__tela_investimento.mostrar_cadastrar_novo_investimento(ativos)
 
             novo_investimento = Investimento(ativo, tipo, valor, mes, ano)
-            self.__usuario.investimentos.append(novo_investimento)
+            self.__controlador_sistema.controlador_usuario.usuario.investimentos.append(novo_investimento)
 
             if tipo.name == "CREDITO":
                 self.__saldo += valor
@@ -59,7 +59,7 @@ class ControladorInvestimento:
                     print(f"DÉBITO registrado. Valor debitado: R$ {valor:.2f}")
                 else:
                     print("Saldo insuficiente para realizar o débito. Débito não registrado.")
-                    self.__usuario.investimentos.pop()
+                    self.__controlador_sistema.controlador_usuario.usuario.investimentos.pop()
                     return
 
             print("Investimento criado com sucesso!")
@@ -78,18 +78,18 @@ class ControladorInvestimento:
 
     def lista_investimento_string(self) -> List[str]:
         return [(f"{investimento.ativo.nome} - Valor: R$ {investimento.valor:.2f} - Mês: {investimento.mes}"
-                 f" - Ano: {investimento.ano}") for investimento in self.__usuario.investimentos]
+                 f" - Ano: {investimento.ano}") for investimento in self.__controlador_sistema.controlador_usuario.usuario.investimentos]
 
     def excluir_investimento(self):
-        if not self.__usuario.investimentos:
+        if not self.__controlador_sistema.controlador_usuario.usuario.investimentos:
             print("Não há investimentos para excluir.")
             return
 
         self.__tela_investimento.mostrar_investimentos(self.lista_investimento_string())
         try:
             indice = int(input("Digite o número do investimento que deseja excluir: "))
-            if 0 <= indice < len(self.__usuario.investimentos):
-                investimento = self.__usuario.investimentos.pop(indice)
+            if 0 <= indice < len(self.__controlador_sistema.controlador_usuario.usuario.investimentos):
+                investimento = self.__controlador_sistema.controlador_usuario.usuario.investimentos.pop(indice)
 
                 if investimento.tipo_investimento.name == "CREDITO":
                     self.__saldo -= investimento.valor

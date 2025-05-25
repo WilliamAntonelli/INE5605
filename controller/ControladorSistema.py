@@ -16,10 +16,10 @@ class ControladorSistema:
         self.__controlador_familiar = ControladorFamiliar(self)
         self.__controlador_usuario = ControladorUsuario(self)
         self.__controlador_categoria = ControladorCategoria(self)
-        self.__controlador_meta = ControladorMeta(self.__controlador_usuario)
+        self.__controlador_meta = ControladorMeta(self)
         self.__controlador_ativo_financeiro = ControladorAtivoFinanceiro()
-        self.__controlador_investimento = ControladorInvestimento(self.__controlador_ativo_financeiro, self.__controlador_usuario)
-        self.__controlador_despesa = ControladorDespesa(self.__controlador_categoria, self.__controlador_usuario)
+        self.__controlador_investimento = ControladorInvestimento(self.__controlador_ativo_financeiro, self)
+        self.__controlador_despesa = ControladorDespesa(self, self.__controlador_categoria)
         self.__controlador_transferencia = ControladorTransferencia(self)
         self.__tela_sistema = TelaSistema()
 

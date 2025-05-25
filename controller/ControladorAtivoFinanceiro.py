@@ -7,6 +7,7 @@ class ControladorAtivoFinanceiro:
         self.__ativos_financeiros = []
         self.__tela_ativo_financeiro = TelaAtivoFinanceiro()
 
+
     def executar(self):
         self.tela_inicial()
 

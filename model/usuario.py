@@ -1,4 +1,4 @@
-from model.ativo_financeiro import AtivoFinanceiro
+from model.investimento import Investimento
 from model.despesa import Despesa
 from model.pessoa import Pessoa
 from model.familiar import Familiar
@@ -18,7 +18,7 @@ class Usuario(Pessoa):
         self.__metas = []
         self.__despesas = []
         self.__transferencias = []
-        self.__ativos = []
+        self.__investimentos = []
 
     @property
     def email(self):
@@ -117,20 +117,20 @@ class Usuario(Pessoa):
 
 
     @property
-    def ativos(self):
-        return self.__ativos
+    def investimentos(self):
+        return self.__investimentos
 
-    def adicionar_ativo(self, ativo):
+    def adicionar_investimento(self, investimento):
 
-        if isinstance(ativo, AtivoFinanceiro):
-            self.__ativos.append(ativo)
+        if isinstance(investimento, Investimento):
+            self.__investimentos.append(investimento)
         else:
-            raise Exception("Ativo inválido, coloque um ativo válido")
+            raise Exception("Investimento inválido, coloque um investimento válido")
 
-    def excluir_ativo(self, ativo):
+    def excluir_investimento(self, investimento):
 
-        if isinstance(ativo, AtivoFinanceiro):
-            self.__ativos.remove(ativo)
+        if isinstance(investimento, Investimento):
+            self.__investimentos.remove(investimento)
         else:
             raise Exception("Ativo inválido, coloque um ativo válido")
 

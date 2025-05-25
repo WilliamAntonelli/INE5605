@@ -5,8 +5,8 @@ from controller.ControladorCategoria import ControladorCategoria
 from controller.ControladorUsuario import ControladorUsuario
 
 class ControladorDespesa:
-    def __init__(self, controlador_categoria: ControladorCategoria, controlador_usuario: ControladorUsuario):
-        self.__usuario = controlador_usuario
+    def __init__(self, controlador_categoria: ControladorCategoria, controlador_sistema):
+        self.__controlador_sistema = controlador_sistema
         self.__tela_despesa = TelaDespesa()
         self.__categorias = controlador_categoria
 
