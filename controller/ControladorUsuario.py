@@ -5,9 +5,10 @@ from exceptions.InvalidInputException import InvalidInputException
 
 class ControladorUsuario:
 
-    def __init__(self):
+    def __init__(self, controlador_sistema):
         self.__usuario = None
         self.__tela_usuario = TelaUusuario()
+        self.__controlador_sistema = controlador_sistema
 
     
     @property

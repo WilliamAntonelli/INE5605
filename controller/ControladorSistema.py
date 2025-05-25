@@ -9,14 +9,18 @@ from view.TelaSistema import TelaSistema
 class ControladorSistema:
 
     def __init__(self):
-        self.__contralador_familiar = ControladorFamiliar()
+        self.__contralador_familiar = ControladorFamiliar(self)
         self.__controlador_categoria = ControladorCategoria()
         self.__controlador_nota_fiscal = ControladorNotaFiscal()
         self.__controlador_meta = ControladorMeta()
-        self.__controlador_usuario = ControladorUsuario()
-        self.__controlador_transferencia = ControladorTransferencia()
+        self.__controlador_usuario = ControladorUsuario(self)
+        self.__controlador_transferencia = ControladorTransferencia(self)
         self.__tela_sistema = TelaSistema()
 
+    @property
+    def controlador_usuario(self):
+        return self.__controlador_usuario
+    
     def iniciar(self):
         self.__controlador_usuario.cadastrar_usuario()
         self.abre_tela()

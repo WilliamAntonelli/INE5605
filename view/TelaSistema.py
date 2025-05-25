@@ -8,7 +8,7 @@ class TelaSistema:
     def mostrar_tela_inicial(self) -> str:
         print("Bem vindo ao sistema de controlador financeiro")
         print("Escolha uma das opções desejadas")
-        print("(1) Familiar")
+        print("(1) Familiares")
         print("(2) Categoria")
         print("(3) Metas")
         print("(4) Investimentos")

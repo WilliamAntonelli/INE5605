@@ -52,9 +52,20 @@ class Usuario(Pessoa):
         familiar = Familiar(nome, profissao, idade, genero, parentesco)
         self.__familiares.append(familiar)
         return familiar
+    
+    def editar_familiar(self, index_familiar_escolhido, nome, profissao, idade, genero, parentesco):
+
+        for count, familiar_ in enumerate(self.__familiares):
+            if count == index_familiar_escolhido:
+                familia_editado = Familiar(nome, profissao, idade, genero, parentesco)
+                self.__familiares[count] = familia_editado
+                return familia_editado
 
     def excluir_familiar(self, nome):
         self.__familiares = [x for x in self.__familiares if x.nome != nome]
+
+    def excluir_familiar_by_index(self, index):
+        self.__familiares.pop(index)
 
     @property
     def metas(self):
@@ -85,7 +96,7 @@ class Usuario(Pessoa):
 
     @property
     def transferencias(self):
-        return self.__familiares
+        return self.__transferencias
 
     def adicionar_transferencia(self, valor, familiar):
 

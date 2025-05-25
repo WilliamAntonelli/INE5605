@@ -4,11 +4,10 @@ from typing import List
 
 class ControladorTransferencia:
 
-    def __int__(self, controlador_sistema):
+    def __init__(self, controlador_sistema):
 
-        self.__controlador_sistema = controlador_sistema
-        self.__transferencias = []
         self.__tela_transferencia = TelaTransferencia()
+        self.__controlador_sistema = controlador_sistema
 
     def executar(self):
         self.tela_inicial()
