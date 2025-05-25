@@ -11,13 +11,17 @@ from view.TelaSistema import TelaSistema
 
 class ControladorSistema:
 
-    def __init__(self,):
-        self.__controlador_usuario = ControladorUsuario()
-        self.__controlador_categoria = ControladorCategoria()
+    def __init__(self):
+
+        self.__controlador_familiar = ControladorFamiliar(self)
+        self.__controlador_usuario = ControladorUsuario(self)
+        self.__controlador_categoria = ControladorCategoria(self)
         self.__controlador_meta = ControladorMeta(self.__controlador_usuario)
         self.__controlador_ativo_financeiro = ControladorAtivoFinanceiro()
         self.__controlador_investimento = ControladorInvestimento(self.__controlador_ativo_financeiro, self.__controlador_usuario)
         self.__controlador_despesa = ControladorDespesa(self.__controlador_categoria, self.__controlador_usuario)
+        self.__controlador_transferencia = ControladorTransferencia(self)
+        self.__tela_sistema = TelaSistema()
 
     @property
     def controlador_usuario(self):
@@ -29,8 +33,17 @@ class ControladorSistema:
 
     def abre_tela(self):
 
-        dict_opcoes_para_execucao = {2: self.__controlador_categoria, 3: self.__controlador_meta, 4: self.__controlador_investimento,
-                                     6: self.__controlador_despesa, 8: self.__controlador_ativo_financeiro}
+        dict_opcoes_para_execucao = {
+
+                1: self.__controlador_familiar,
+                2: self.__controlador_categoria, 
+                3: self.__controlador_meta, 
+                4: self.__controlador_investimento,
+                5: self.__controlador_transferencia,
+                6: self.__controlador_despesa,
+                7: self.__controlador_usuario,
+                8: self.__controlador_ativo_financeiro
+            }
 
         while True:
             try:
@@ -43,7 +56,7 @@ class ControladorSistema:
                 if controlador is None:
                     print("Operação não reconhecida, por favor digita uma opção válida")
                 else:
-                    acao.executar()
-        except ValueError:
-            print("Operação não reconhecida, por favor digita uma opção válida")
+                    controlador.executar()
+            except ValueError:
+                print("Operação não reconhecida, por favor digita uma opção válida")
 

@@ -5,15 +5,17 @@ from typing import List
 
 class ControladorCategoria:
 
-    def __init__(self):
+    def __init__(self, controlador_sistema):
         self.__categorias = []
         self.__tela_categoria = TelaCategoria()
+        self.__controlador_sistema = controlador_sistema
     
     def executar(self):
         self.tela_inicial()
         
     def tela_inicial(self):
 
+        try:
             while True:
                 opcao_menu = self.__tela_categoria.mostrar_tela_inicial()
                 match int(opcao_menu):
