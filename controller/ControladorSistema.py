@@ -27,6 +27,12 @@ class ControladorSistema:
     def controlador_usuario(self):
         return self.__controlador_usuario
     
+    
+    @property
+    def controlador_familiar(self):
+        return self.__controlador_familiar
+    
+    
     def iniciar(self):
         self.__controlador_usuario.cadastrar_usuario()
         self.abre_tela()

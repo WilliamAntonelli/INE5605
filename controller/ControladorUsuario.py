@@ -122,3 +122,17 @@ class ControladorUsuario:
                 print("Algo de errado ocorreu durante a execução do programa")
                 print(e)
 
+
+    def adicionar_transferencia(self, index_familiar, valor):
+
+        familiar = self.get_familiar_by_index(index_familiar)
+        self.__usuario.adicionar_transferencia(valor, familiar)
+
+    
+    def get_familiar_by_index(self, index_familiar):
+
+
+        if index_familiar < 0 or index_familiar >= len(self.usuario.familiares):
+            raise InvalidInputException("Familiar não cadastrado em usuário")
+        
+        return self.usuario.familiares[index_familiar]

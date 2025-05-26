@@ -6,6 +6,7 @@ class TelaFamiliar:
     def __init__(self):
         ...
 
+
     def mostrar_tela_inicial(self) -> str:
         print("-------- Opções em familiares ----------")
 
@@ -17,6 +18,7 @@ class TelaFamiliar:
 
         opcao_menu = input()
         return opcao_menu
+    
     
     def mostrar_cadastrar_novo_familiar(self) -> dict:
         nome = input("Digite o nome do familiar: ")
@@ -42,8 +44,10 @@ class TelaFamiliar:
 
     def mostrar_informacoes_edit(self, familiares: List[dict]) -> None:
 
+
+
         for count, familiar in enumerate(familiares):
-            print(f"({count}): {familiar.nome}")
+            print(f"({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}")
 
         familiar_escolhido = int(input("Qual familiar deseja alterar ?"))
 
@@ -62,6 +66,25 @@ class TelaFamiliar:
         
         novo_campo = input("Digite o novo valor: ")
         return familiar_escolhido, opcao_menu, novo_campo
+    
+    
+    def mostrar_informacoes_excluir_familiar(self, familiares: List[dict]) -> None:
+
+        if len(familiares) == 0:
+            print("Nenhum familiar cadastrado no momento\n")
+            return
+
+        for count, familiar in enumerate(familiares):
+            print(f"({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}")
+
+        print(f"({len(familiares)}) Voltar")
+        print("Qual familiar deseja excluir ?")
+        familiar_escolhido = int(input())
+
+        if familiar_escolhido == len(familiares): return
+
+        return familiar_escolhido
+    
 
     def mostrar_informacoes(self, familiares: List[dict]) -> None:
 

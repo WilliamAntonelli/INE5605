@@ -3,11 +3,12 @@ from model.despesa import Despesa
 from model.pessoa import Pessoa
 from model.familiar import Familiar
 from model.meta import Meta
-
+from exceptions.InvalidInputException import InvalidInputException
 
 class Usuario(Pessoa):
 
     def __init__(self, nome, profissao, idade, genero, email, senha, renda):
+
         super().__init__(nome, profissao, idade, genero)
         self.__email = email
         self.__senha = senha
@@ -47,25 +48,31 @@ class Usuario(Pessoa):
     @property
     def familiares(self):
         return self.__familiares
+    
 
     def adicionar_familiar(self, nome, profissao, idade, genero, parentesco):
         familiar = Familiar(nome, profissao, idade, genero, parentesco)
         self.__familiares.append(familiar)
         return familiar
     
-    def editar_familiar(self, index_familiar_escolhido, nome, profissao, idade, genero, parentesco):
+    
+    def editar_info_familiar(self, index_familiar_escolhido, field, novo_valor):
 
         for count, familiar_ in enumerate(self.__familiares):
             if count == index_familiar_escolhido:
-                familia_editado = Familiar(nome, profissao, idade, genero, parentesco)
-                self.__familiares[count] = familia_editado
-                return familia_editado
+                setattr(familiar_, field, novo_valor)
+                return
+            
+        raise InvalidInputException("Familiar não cadastrado em usuário")
+            
 
     def excluir_familiar(self, nome):
         self.__familiares = [x for x in self.__familiares if x.nome != nome]
 
+
     def excluir_familiar_by_index(self, index):
         self.__familiares.pop(index)
+    
 
     @property
     def metas(self):
@@ -94,9 +101,11 @@ class Usuario(Pessoa):
         else:
             raise Exception("Despesa inválida, coloque um despesa válida")
 
+
     @property
     def transferencias(self):
         return self.__transferencias
+
 
     def adicionar_transferencia(self, valor, familiar):
 
@@ -107,13 +116,11 @@ class Usuario(Pessoa):
             self.__transferencias.append(transferencia)
         else:
             raise Exception("Familiar inválida, coloque um familiar válido")
+        
 
-    def excluir_transferencia(self, transferencia):
+    def excluir_transferencia(self, index_transferencia):
 
-        if isinstance(transferencia, Transferencia):
-            self.__transferencias.remove(transferencia)
-        else:
-            raise Exception("Transferencia inválida, coloque um transferencia válida")
+        self.__transferencias.pop(index_transferencia)
 
 
     @property

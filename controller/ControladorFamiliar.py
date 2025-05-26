@@ -27,9 +27,9 @@ class ControladorFamiliar:
                     case 3:
                         self.editar_familiar()
                     case 4:
-                        break
+                        self.excluir_familiar()
                     case 5:
-                        break
+                        return
                     case _:
                         print("Operação não reconhecida, por favor digita uma opção válida")
 
@@ -62,22 +62,50 @@ class ControladorFamiliar:
                     5: "parentesco"
                 }
                 
-                index_familiar_escolhido, opcao_menu, novo_campo = self.__tela_familiar.mostrar_informacoes_edit(self.lista_famialiares())
+                lista_familiares = self.lista_famialiares()
+                if len(lista_familiares) == 0:
+                    print("Nenhum familiar cadastrado no momento\n")
+                    return
+                
+                index_familiar_escolhido, opcao_menu, novo_campo = self.__tela_familiar.mostrar_informacoes_edit(lista_familiares)
 
                 if int(opcao_menu) == 8:
-                    break
+                    return
                 
                 field = fiels_familiares_to_setters.get(int(opcao_menu))
                 if field is None:
                     raise ValueError
 
                 if field == "genero":
-                    field = Genero.get_by_codigo(novo_campo)
+                    novo_campo = Genero.get_by_codigo(novo_campo)
                 if field == "parentesco":
-                    field = Parentesco.get_by_codigo(novo_campo)
+                    novo_campo = Parentesco.get_by_codigo(novo_campo)
 
-                setattr(self.__controlador_sistema.controlador_usuario.usuarios.familiares[index_familiar_escolhido], field, novo_campo)
-                break
+
+                self.__controlador_sistema.controlador_usuario.usuario.editar_info_familiar(index_familiar_escolhido, field, novo_campo)
+                return
+
+            except ValueError:
+                print("Operação não reconhecida, por favor digita uma opção válida")
+
+            except Exception as e:
+                print("Algo de errado ocorreu durante a execução do programa")
+                print(e)
+
+
+    def excluir_familiar(self):
+        while True:
+            try:
+                
+                lista_familiares = self.lista_famialiares()
+                index_familiar_escolhido = self.__tela_familiar.mostrar_informacoes_excluir_familiar(lista_familiares)
+
+                if index_familiar_escolhido is None or len(lista_familiares) == index_familiar_escolhido:
+                    return
+
+
+                self.__controlador_sistema.controlador_usuario.usuario.excluir_familiar_by_index(index_familiar_escolhido)
+                return
 
             except ValueError:
                 print("Operação não reconhecida, por favor digita uma opção válida")

@@ -49,7 +49,8 @@ class Pessoa(ABC):
 
     @idade.setter
     def idade(self, idade):
-
+        
+        idade = int(idade)
         if idade <= 0:
             raise InvalidInputException("Idade inválida, coloque uma profissão válida")
         
