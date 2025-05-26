@@ -1,4 +1,6 @@
 from enum import Enum
+from exceptions.GeneroNotFoundException import GeneroNotFoundException
+from exceptions.ParentescoNotFoundException import ParentescoNotFoundException
 
 class Genero(Enum):
     MASCULINO = (1, "Homen")
@@ -21,7 +23,8 @@ class Genero(Enum):
         for item in cls:
             if item.codigo == codigo:
                 return item
-        return None
+        
+        raise GeneroNotFoundException
 
 class TipoDespesa(Enum):
     FIXA = "Fixa"
@@ -85,4 +88,5 @@ class Parentesco(Enum):
         for item in cls:
             if item.codigo == codigo:
                 return item
-        return None
+        
+        raise ParentescoNotFoundException

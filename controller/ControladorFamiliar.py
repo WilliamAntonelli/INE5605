@@ -2,6 +2,8 @@ from view.TelaFamiliar import TelaFamiliar
 from model.familiar import Familiar
 from typing import List
 from util.enums import Genero, Parentesco
+from exceptions.InvalidInputException import InvalidInputException
+from exceptions.DataNotFoundException import DataNotFoundException
 
 class ControladorFamiliar:
 
@@ -33,21 +35,27 @@ class ControladorFamiliar:
                     case _:
                         print("Operação não reconhecida, por favor digita uma opção válida")
 
-            except ValueError:
-                print("Dados do usuário não inválidos, por favor coloque as informações de acordo com o requerido")
+            except (ValueError, InvalidInputException) as e:
+                print("Foi inserido algum valor inconsistente do que esperado pelo sistema")
+                print(e)
+
+            except DataNotFoundException as e:
+                print("Algum dado inserido não foi encontrado")
+                print(e)
 
             except Exception as e:
-                print("Algo de errado ocorreu durante a execução do programa")
+                print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
                 print(e)
 
     def adcionar_familiar(self):
-
+            
         novo_familiar_dict = self.__tela_familiar.mostrar_cadastrar_novo_familiar()
 
-        genero = Genero.get_by_codigo(novo_familiar_dict["genero"])
-        parentesco = Parentesco.get_by_codigo(novo_familiar_dict["parentesco"])
+        int(novo_familiar_dict["genero"])
+        genero = Genero.get_by_codigo(int(novo_familiar_dict["genero"]))
+        parentesco = Parentesco.get_by_codigo(int(novo_familiar_dict["parentesco"]))
         self.__controlador_sistema.controlador_usuario.usuario.adicionar_familiar(
-                novo_familiar_dict["nome"], novo_familiar_dict["profissao"], novo_familiar_dict["idade"], genero, parentesco
+                novo_familiar_dict["nome"], novo_familiar_dict["profissao"], int(novo_familiar_dict["idade"]), genero, parentesco
             )
         
     def editar_familiar(self):
@@ -85,11 +93,16 @@ class ControladorFamiliar:
                 self.__controlador_sistema.controlador_usuario.usuario.editar_info_familiar(index_familiar_escolhido, field, novo_campo)
                 return
 
-            except ValueError:
-                print("Operação não reconhecida, por favor digita uma opção válida")
+            except (ValueError, InvalidInputException) as e:
+                print("Foi inserido algum valor inconsistente do que esperado pelo sistema")
+                print(e)
+
+            except DataNotFoundException as e:
+                print("Algum dado inserido não foi encontrado")
+                print(e)
 
             except Exception as e:
-                print("Algo de errado ocorreu durante a execução do programa")
+                print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
                 print(e)
 
 
@@ -103,16 +116,21 @@ class ControladorFamiliar:
                 if index_familiar_escolhido is None or len(lista_familiares) == index_familiar_escolhido:
                     return
 
-
                 self.__controlador_sistema.controlador_usuario.usuario.excluir_familiar_by_index(index_familiar_escolhido)
                 return
 
-            except ValueError:
-                print("Operação não reconhecida, por favor digita uma opção válida")
+            except (ValueError, InvalidInputException) as e:
+                print("Foi inserido algum valor inconsistente do que esperado pelo sistema")
+                print(e)
+
+            except DataNotFoundException as e:
+                print("Algum dado inserido não foi encontrado")
+                print(e)
 
             except Exception as e:
-                print("Algo de errado ocorreu durante a execução do programa")
+                print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
                 print(e)
+                
 
     def lista_famialiares(self) -> List[dict]:
 

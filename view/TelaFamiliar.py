@@ -23,14 +23,14 @@ class TelaFamiliar:
     def mostrar_cadastrar_novo_familiar(self) -> dict:
         nome = input("Digite o nome do familiar: ")
         profissao = input("Digite a profissão do familiar: ")
-        idade = int(input("Digite a idade do familiar: "))
-        genero = int(input("Digite 1 para homen e 2 para mulher, para escolher o gênero do familiar: "))
+        idade = input("Digite a idade do familiar: ")
+        genero = input("Digite 1 para homen e 2 para mulher, para escolher o gênero do familiar: ")
+
         for parentesco in Parentesco:
             print(f"({parentesco.codigo}) Digite o familiar que deseja adicionar {parentesco.descricao}")
         
-        parentesco = int(input())
+        parentesco = input()
         
-
         novo_familiar = {
             "nome": nome,
             "profissao": profissao,
