@@ -1,6 +1,8 @@
 from util.enums import Genero
 from abc import ABC
 from exceptions.InvalidInputException import InvalidInputException
+from exceptions.StringEmptyException import StringEmptyException
+from exceptions.GeneroNotFoundException import GeneroNotFoundException
 
 
 class Pessoa(ABC):
@@ -26,7 +28,7 @@ class Pessoa(ABC):
 
         nome_valido = nome.strip()
         if len(nome_valido) == 0:
-            raise InvalidInputException("Nome inválido, coloque um nome válido")
+            raise StringEmptyException
 
         self.__nome = nome
 
@@ -39,7 +41,7 @@ class Pessoa(ABC):
 
         profissao_valida = profissao.strip()
         if len(profissao_valida) == 0:
-            raise InvalidInputException("Profissão inválida, coloque uma profissão válida")
+            raise StringEmptyException
     
         self.__profissao = profissao
 
@@ -52,7 +54,7 @@ class Pessoa(ABC):
         
         idade = int(idade)
         if idade <= 0:
-            raise InvalidInputException("Idade inválida, coloque uma profissão válida")
+            raise InvalidInputException("Idade inválida, coloque uma idade válida")
         
         self.__idade = idade
 
@@ -62,12 +64,12 @@ class Pessoa(ABC):
 
     @genero.setter
     def genero(self, genero):
+
         if not isinstance(genero, Genero):
-            raise InvalidInputException("Genero inválido, coloque um genero válido")
+            raise GeneroNotFoundException
         
         self.__genero = genero
 
             
     def exibir_dados(self):
         return f"Nome: {self.__nome} | Profissão: {self.__profissao} | Idade: {self.__idade} | Gênero: {self.__genero.value}"
-

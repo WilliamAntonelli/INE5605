@@ -1,5 +1,7 @@
 from model.pessoa import Pessoa
 from util.enums import Parentesco
+from exceptions.StringEmptyException import StringEmptyException
+from exceptions.ParentescoNotFoundException import ParentescoNotFoundException
 
 
 class Familiar(Pessoa):
@@ -18,7 +20,7 @@ class Familiar(Pessoa):
         if isinstance(parentesco, Parentesco):
             self.__parentesco = parentesco
         else:
-            raise Exception("Parentesco inválido, coloque um tipo de parentesco válido")
+            raise ParentescoNotFoundException("Parentesco inválido, coloque um tipo de parentesco válido")
 
     def exibir_dados(self):
         return f"{super().exibir_dados()} | Parentesco: {self.__parentesco} "

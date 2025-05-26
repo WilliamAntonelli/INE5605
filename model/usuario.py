@@ -43,6 +43,11 @@ class Usuario(Pessoa):
 
     @renda.setter
     def renda(self, renda):
+
+        renda = int(renda)
+        if renda <= 0:
+            raise InvalidInputException("Renda inválida, coloque uma renda válida")
+        
         self.__renda = renda
 
     @property
@@ -107,12 +112,12 @@ class Usuario(Pessoa):
         return self.__transferencias
 
 
-    def adicionar_transferencia(self, valor, familiar):
+    def adicionar_transferencia(self, valor, familiar, mes, ano):
 
         from model.transferencia import Transferencia
 
         if isinstance(familiar, Familiar):
-            transferencia = Transferencia(valor, self, familiar)
+            transferencia = Transferencia(valor, self, familiar, mes, ano)
             self.__transferencias.append(transferencia)
         else:
             raise Exception("Familiar inválida, coloque um familiar válido")

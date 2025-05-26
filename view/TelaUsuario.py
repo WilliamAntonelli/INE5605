@@ -56,7 +56,7 @@ class TelaUusuario:
         print("(7) Renda: ")
         print("(8) Cancelar edição")
         
-        opcao_menu = input("Qual o campo você deseja alterar ?")
+        opcao_menu = input("Qual o campo você deseja alterar ? ")
 
         if int(opcao_menu) == 8:
              return opcao_menu, None

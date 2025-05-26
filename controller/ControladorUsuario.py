@@ -37,12 +37,12 @@ class ControladorUsuario:
                     case _:
                         print("Operação não reconhecida, por favor digita uma opção válida")
 
-            except InvalidInputException as e:
+            except (ValueError, InvalidInputException) as e:
+                print("Foi inserido algum valor inconsistente do que esperado pelo sistema")
                 print(e)
                 
             except ValueError:
                 print("Operação não reconhecida, por favor digita uma opção válida")
-                raise ValueError("")
 
 
     def get_usuario_in_dict(self) -> dict:
@@ -51,7 +51,7 @@ class ControladorUsuario:
                         "nome": self.__usuario.nome,
                         "profissao": self.__usuario.profissao,
                         "idade": self.__usuario.idade,
-                        "genero": self.__usuario.genero.value,
+                        "genero": self.__usuario.genero.descricao,
                         "email": self.__usuario.email,
                         "senha": self.__usuario.senha,
                         "renda": self.__usuario.renda
@@ -83,6 +83,8 @@ class ControladorUsuario:
                 if field is None:
                     print("Operação não reconhecida, por favor digita uma opção válida")
                     continue
+                elif field == "genero":
+                    novo_campo = Genero.get_by_codigo(int(novo_campo))
 
                 setattr(self.__usuario, field, novo_campo)
                 break
@@ -97,19 +99,18 @@ class ControladorUsuario:
     def cadastrar_usuario(self):
         while self.__usuario is None:
             try:
-                #TODO remover isso aqui
-                #novo_usuario = self.__tela_usuario.mostrar_cadastrar_novo_usuario()
 
+                novo_usuario = self.__tela_usuario.mostrar_cadastrar_novo_usuario()
 
-                novo_usuario = {
-                    "nome": "João cabaleiro da silva",
-                    "profissao": "Engenheiro de Software",
-                    "idade": 30,
-                    "email": "joao.silva@email.com",
-                    "senha": "senhaSegura123",
-                    "renda": 8500.00,
-                    "genero": 1
-                } 
+                # novo_usuario = {
+                #     "nome": "João cabaleiro da silva",
+                #     "profissao": "Engenheiro de Software",
+                #     "idade": 30,
+                #     "email": "joao.silva@email.com",
+                #     "senha": "senhaSegura123",
+                #     "renda": 8500.00,
+                #     "genero": 1
+                # } 
 
                 genero = Genero.get_by_codigo(novo_usuario["genero"])
                 self.__usuario = Usuario(novo_usuario["nome"], novo_usuario["profissao"], novo_usuario["idade"], genero, novo_usuario["email"], 
@@ -123,16 +124,7 @@ class ControladorUsuario:
                 print(e)
 
 
-    def adicionar_transferencia(self, index_familiar, valor):
+    def adicionar_transferencia(self, index_familiar, valor, mes, ano):
 
-        familiar = self.get_familiar_by_index(index_familiar)
-        self.__usuario.adicionar_transferencia(valor, familiar)
-
-    
-    def get_familiar_by_index(self, index_familiar):
-
-
-        if index_familiar < 0 or index_familiar >= len(self.usuario.familiares):
-            raise InvalidInputException("Familiar não cadastrado em usuário")
-        
-        return self.usuario.familiares[index_familiar]
+        familiar = self.__controlador_sistema.controlador_familiar.get_familiar_by_index(index_familiar)
+        self.__usuario.adicionar_transferencia(valor, familiar, mes, ano)

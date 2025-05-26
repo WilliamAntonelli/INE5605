@@ -23,7 +23,7 @@ class ControladorFamiliar:
                 opcao_menu = self.__tela_familiar.mostrar_tela_inicial()
                 match int(opcao_menu):
                     case 1:
-                        self.adcionar_familiar()
+                        self.adicionar_familiar()
                     case 2:
                         self.__tela_familiar.mostrar_informacoes(self.lista_famialiares())
                     case 3:
@@ -47,7 +47,7 @@ class ControladorFamiliar:
                 print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
                 print(e)
 
-    def adcionar_familiar(self):
+    def adicionar_familiar(self):
             
         novo_familiar_dict = self.__tela_familiar.mostrar_cadastrar_novo_familiar()
 
@@ -84,11 +84,10 @@ class ControladorFamiliar:
                 if field is None:
                     raise ValueError
 
-                if field == "genero":
-                    novo_campo = Genero.get_by_codigo(novo_campo)
-                if field == "parentesco":
-                    novo_campo = Parentesco.get_by_codigo(novo_campo)
-
+                elif field == "genero":
+                    novo_campo = Genero.get_by_codigo(int(novo_campo))
+                elif field == "parentesco":
+                    novo_campo = Parentesco.get_by_codigo(int(novo_campo))
 
                 self.__controlador_sistema.controlador_usuario.usuario.editar_info_familiar(index_familiar_escolhido, field, novo_campo)
                 return
@@ -105,8 +104,8 @@ class ControladorFamiliar:
                 print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
                 print(e)
 
-
     def excluir_familiar(self):
+
         while True:
             try:
                 
@@ -130,7 +129,14 @@ class ControladorFamiliar:
             except Exception as e:
                 print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
                 print(e)
-                
+
+    def get_familiar_by_index(self, index_familiar):
+
+
+        if index_familiar < 0 or index_familiar >= len(self.__controlador_sistema.controlador_usuario.usuario.familiares):
+            raise InvalidInputException("Familiar não cadastrado em usuário")
+        
+        return self.__controlador_sistema.controlador_usuario.usuario.familiares[index_familiar]   
 
     def lista_famialiares(self) -> List[dict]:
 
@@ -141,3 +147,4 @@ class ControladorFamiliar:
             "genero": familiar.genero.descricao,
             "parentesco": familiar.parentesco.descricao
         } for familiar in self.__controlador_sistema.controlador_usuario.usuario.familiares]
+    

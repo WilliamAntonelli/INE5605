@@ -19,7 +19,7 @@ class TelaCategoria:
     def mostrar_cadastrar_nova_categoria(self) -> str:
         print("-------- Insira nova Categoria ----------")
 
-        nova_categoria = input("Insira o novo nome da categoria")
+        nova_categoria = input("Insira o novo nome da categoria: ")
         return nova_categoria
 
     def mostrar_categorias(self, categorias: List[str]) -> None:

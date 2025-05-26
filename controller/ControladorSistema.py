@@ -24,14 +24,36 @@ class ControladorSistema:
         self.__tela_sistema = TelaSistema()
 
     @property
-    def controlador_usuario(self):
-        return self.__controlador_usuario
-    
-    
-    @property
     def controlador_familiar(self):
         return self.__controlador_familiar
     
+    @property
+    def controlador_usuario(self):
+        return self.__controlador_usuario
+    
+    @property
+    def controlador_categoria(self):
+        return self.__controlador_categoria
+    
+    @property
+    def controlador_meta(self):
+        return self.__controlador_meta
+    
+    @property
+    def controlador_ativo_financeiro(self):
+        return self.__controlador_ativo_financeiro
+    
+    @property
+    def controlador_investimento(self):
+        return self.__controlador_investimento
+    
+    @property
+    def controlador_despesa(self):
+        return self.__controlador_despesa
+    
+    @property
+    def controlador_transferencais(self):
+        return self.__controlador_transferencia
     
     def iniciar(self):
         self.__controlador_usuario.cadastrar_usuario()
@@ -63,6 +85,6 @@ class ControladorSistema:
                     print("Operação não reconhecida, por favor digita uma opção válida")
                 else:
                     controlador.executar()
+
             except ValueError:
                 print("Operação não reconhecida, por favor digita uma opção válida")
-
