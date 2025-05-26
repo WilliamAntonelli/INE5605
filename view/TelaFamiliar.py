@@ -43,7 +43,7 @@ class TelaFamiliar:
     def mostrar_informacoes_edit(self, familiares: List[dict]) -> None:
 
         for count, familiar in enumerate(familiares):
-            print(f"({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}")
+            print(f'({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}')
 
         familiar_escolhido = int(input("Qual familiar deseja alterar ? "))
 
@@ -75,7 +75,7 @@ class TelaFamiliar:
             return
 
         for count, familiar in enumerate(familiares):
-            print(f"({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}")
+            print(f'({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}')
 
         print(f"({len(familiares)}) Voltar")
         print("Qual familiar deseja excluir ? ")

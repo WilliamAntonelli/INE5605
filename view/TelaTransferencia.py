@@ -23,7 +23,7 @@ class TelaTransferencia:
         print("-------- Escolha para qual familiar você quer transferir ----------")
 
         for count, familiar in enumerate(familiares):
-            print(f"({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}")
+            print(f'({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}')
         
         print(f"({len(familiares)}) Voltar a tela de transferências")
         familiar_escolhido = int(input("Para qual familiar deseja enviar ? "))
@@ -40,7 +40,7 @@ class TelaTransferencia:
         print("-------- Suas transferências ----------")
 
         for count, transferencia in enumerate(transferencias):
-            print(f"({count}) - Origem: {transferencia["origem"]}, destino: {transferencia["destino"]}, valor: {transferencia["valor"]}, data: {transferencia["mes"]}/{transferencia["ano"]}")
+            print(f'({count}) - Origem: {transferencia["origem"]}, destino: {transferencia["destino"]}, valor: {transferencia["valor"]}, data: {transferencia["mes"]}/{transferencia["ano"]}')
         
         print()
 
