@@ -2,12 +2,13 @@ from model.meta import Meta
 from view.TelaMeta import TelaMeta
 from typing import List
 from datetime import datetime
+from DAOs.meta_dao import MetaDAO
 
 class ControladorMeta:
     def __init__(self, controlador_sistema):
-        self.__metas = []
         self.__controlador_sistema = controlador_sistema
         self.__tela_meta = TelaMeta()
+        self.__meta_DAO = MetaDAO()
 
     def executar(self):
         self.tela_inicial()
@@ -20,7 +21,7 @@ class ControladorMeta:
                     case 1:
                         self.adicionar_meta()
                     case 2:
-                        self.__tela_meta.mostrar_metas(self.lista_meta_string())
+                        self.lista_meta()
                     case 3:
                         self.excluir_meta()
                     case 4:
@@ -28,7 +29,7 @@ class ControladorMeta:
                     case _:
                         self.__tela_meta.mostrar_erro("Operação não reconhecida")
         except ValueError:
-            self.__tela_meta.mostrar_erro("Operação não reconhecida")
+            self.__tela_meta.mostrar_erro("Operação inválida")
         except Exception as e:
             self.__tela_meta.mostrar_erro(f"Erro inesperado: {str(e)}")
 
@@ -46,35 +47,54 @@ class ControladorMeta:
                 self.__tela_meta.mostrar_erro("Data inválida! Use o formato DD/MM/AAAA.")
                 return
 
-            if any(meta.data_vencimento == data for meta in self.__controlador_sistema.controlador_usuario.usuario.metas):
-                self.__tela_meta.mostrar_erro(f"Já existe uma meta com vencimento '{data}'.")
-                return
+            for meta in self.__meta_DAO.get_all():
+                if meta.data_vencimento == data:
+                    self.__tela_meta.mostrar_erro(f"Já existe uma meta com vencimento '{data.strftime('%d/%m/%Y')}'.")
+                    return
 
             nova_meta = Meta(valor, data)
-            self.__metas.append(nova_meta)
+            self.__meta_DAO.add(nova_meta)
             self.__tela_meta.mostrar_mensagem("Meta cadastrada com sucesso!")
 
         except Exception as e:
             self.__tela_meta.mostrar_erro(f"Erro ao adicionar meta: {e}")
 
-    def lista_meta_string(self) -> List[str]:
-        return [
-            f"Objetivo: R${m.valor_objetivo:.2f}, Vencimento: {m.data_vencimento.strftime('%d/%m/%Y')}"
-            for m in self.__metas
-        ]
+    def lista_meta(self):
+        try:
+            metas = list(self.__meta_DAO.get_all())
+
+            if not metas:
+                self.__tela_meta.mostrar_erro("Nenhuma meta cadastrada.")
+                return
+
+            lista_strings = [
+                f"Objetivo: R${m.valor_objetivo:.2f}, Vencimento: {m.data_vencimento.strftime('%d/%m/%Y')}"
+                for m in metas
+            ]
+            self.__tela_meta.mostrar_metas(lista_strings)
+        except Exception as e:
+            self.__tela_meta.mostrar_erro(f"Erro ao listar metas: {str(e)}")
 
     def excluir_meta(self):
-        metas = self.__metas
+        try:
+            metas = list(self.__meta_DAO.get_all())
 
-        if not metas:
-            self.__tela_meta.mostrar_erro("Nenhuma meta para excluir.")
-            return
+            if not metas:
+                self.__tela_meta.mostrar_erro("Nenhuma meta para excluir.")
+                return
 
-        self.__tela_meta.mostrar_metas(self.lista_meta_string())
-        indice = self.__tela_meta.pedir_indice("Digite o número da meta que deseja excluir: ")
+            lista_strings = [
+                f"Objetivo: R${m.valor_objetivo:.2f}, Vencimento: {m.data_vencimento.strftime('%d/%m/%Y')}"
+                for m in metas
+            ]
+            self.__tela_meta.mostrar_metas(lista_strings)
+            indice = self.__tela_meta.pedir_indice("Digite o número da meta que deseja excluir: ")
 
-        if 0 <= indice < len(metas):
-            removida = metas.pop(indice)
-            self.__tela_meta.mostrar_mensagem(f"Meta com valor R$ {removida.valor_objetivo:.2f} excluída.")
-        else:
-            self.__tela_meta.mostrar_erro("Índice inválido.")
+            if 0 <= indice < len(metas):
+                meta = metas[indice]
+                self.__meta_DAO.remove(id(meta))
+                self.__tela_meta.mostrar_mensagem(f"Meta com valor R$ {meta.valor_objetivo:.2f} excluída.")
+            else:
+                self.__tela_meta.mostrar_erro("Índice inválido.")
+        except Exception as e:
+            self.__tela_meta.mostrar_erro(f"Erro ao excluir meta: {e}")
