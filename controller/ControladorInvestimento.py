@@ -2,15 +2,24 @@ from model.investimento import Investimento
 from view.TelaInvestimento import TelaInvestimento
 from typing import List
 from controller.ControladorAtivoFinanceiro import ControladorAtivoFinanceiro
-from controller.ControladorUsuario import ControladorUsuario
+from DAOs.investimento_dao import InvestimentoDAO
 
 class ControladorInvestimento:
     def __init__(self, controlador_ativo_financeiro, controlador_sistema):
         self.__controlador_sistema = controlador_sistema
-        self.__investimentos = []
         self.__tela_investimento = TelaInvestimento()
         self.__ativos_financeiros = controlador_ativo_financeiro
-        self.__saldo = 0
+        self.__investimento_DAO = InvestimentoDAO()
+        self.__saldo = self.calcula_saldo_inicial()
+
+    def calcula_saldo_inicial(self) -> float:
+        saldo = 0
+        for investimento in self.__investimento_DAO.get_all():
+            if investimento.tipo_investimento.name == "CREDITO":
+                saldo += investimento.valor
+            elif investimento.tipo_investimento.name == "DEBITO":
+                saldo -= investimento.valor
+        return saldo
 
     def executar(self):
         self.tela_inicial()
@@ -23,7 +32,7 @@ class ControladorInvestimento:
                     case 1:
                         self.adicionar_investimento()
                     case 2:
-                        self.__tela_investimento.mostrar_investimentos(self.lista_investimento_string())
+                        self.lista_investimento()
                     case 3:
                         self.__tela_investimento.mostrar_saldo(self.__saldo)
                     case 4:
@@ -52,7 +61,7 @@ class ControladorInvestimento:
             ativo, tipo, valor, mes, ano = resultado
 
             novo_investimento = Investimento(ativo, tipo, valor, mes, ano)
-            self.__investimentos.append(novo_investimento)
+            self.__investimento_DAO.add(novo_investimento)
 
             if tipo.name == "CREDITO":
                 self.__saldo += valor
@@ -63,7 +72,7 @@ class ControladorInvestimento:
                     self.__tela_investimento.mostrar_mensagem(f"DÉBITO registrado. Valor: R$ {valor:.2f}")
                 else:
                     self.__tela_investimento.mostrar_erro("Saldo insuficiente para realizar o débito. Débito não registrado.")
-                    self.__investimentos.pop()
+                    self.__investimento_DAO.remove(id(novo_investimento))
                     return
 
             self.__tela_investimento.mostrar_mensagem("Investimento criado com sucesso!")
@@ -71,24 +80,33 @@ class ControladorInvestimento:
         except Exception as e:
             self.__tela_investimento.mostrar_erro(f"Erro ao adicionar investimento: {str(e)}")
 
-    def lista_investimento_string(self) -> List[str]:
-        return [
-            f"{investimento.ativo.nome} | Tipo: {investimento.tipo_investimento.name} | Valor: R$ {investimento.valor:.2f} | Mês: {investimento.mes} | Ano: {investimento.ano}"
-            for investimento in self.__investimentos
-        ]
+    def lista_investimento(self):
+        try:
+            investimentos = list(self.__investimento_DAO.get_all())
+            lista_strings = [
+                f"{investimento.ativo.nome} | Tipo: {investimento.tipo_investimento.name} | Valor: R$ {investimento.valor:.2f} | Mês: {investimento.mes} | Ano: {investimento.ano}"
+                for investimento in investimentos
+            ]
+            self.__tela_investimento.mostrar_investimentos(lista_strings)
+        except Exception as e:
+            self.__tela_investimento.mostrar_erro(f"Erro ao listar investimentos: {str(e)}")
 
     def excluir_investimento(self):
-        investimentos = self.__investimentos
+        investimentos = list(self.__investimento_DAO.get_all())
 
         if not investimentos:
             self.__tela_investimento.mostrar_erro("Não há investimentos para excluir.")
             return
 
-        lista_strings = self.lista_investimento_string()
+        lista_strings = [
+            f"{investimento.ativo.nome} | Tipo: {investimento.tipo_investimento.name} | Valor: R$ {investimento.valor:.2f} | Mês: {investimento.mes} | Ano: {investimento.ano}"
+            for investimento in investimentos
+        ]
         indice = self.__tela_investimento.selecionar_investimento_para_excluir(lista_strings)
 
         if 0 <= indice < len(investimentos):
-            investimento = investimentos.pop(indice)
+            investimento = investimentos[indice]
+            self.__investimento_DAO.remove(id(investimento))
 
             if investimento.tipo_investimento.name == "CREDITO":
                 self.__saldo -= investimento.valor
