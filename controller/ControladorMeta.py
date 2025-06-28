@@ -25,59 +25,55 @@ class ControladorMeta:
                     case 4:
                         break
                     case _:
-                        print("Operação não reconhecida, por favor digite uma opção válida")
+                        self.__tela_meta.mostrar_erro("Operação não reconhecida")
         except ValueError:
-            print("Operação não reconhecida, por favor digita uma opção válida")
+            self.__tela_meta.mostrar_erro("Operação não reconhecida")
         except Exception as e:
-            print(f"Ocorreu um erro inesperado: {str(e)}")
-
+            self.__tela_meta.mostrar_erro(f"Erro inesperado: {str(e)}")
 
     def adicionar_meta(self):
         try:
-            valor, data = self.__tela_meta.mostrar_cadastrar_nova_meta()
+            valor, data_texto = self.__tela_meta.mostrar_cadastrar_nova_meta()
 
-            if not valor or not data:
-                print("Os campos valor e data são obrigatórios.")
+            if not valor or not data_texto:
+                self.__tela_meta.mostrar_erro("Os campos valor e data são obrigatórios.")
                 return
 
             try:
-                data = datetime.strptime(data, "%d/%m/%Y").date()
+                data = datetime.strptime(data_texto, "%d/%m/%Y").date()
             except ValueError:
-                print("Data inválida! Use o formato DD/MM/AAAA.")
+                self.__tela_meta.mostrar_erro("Data inválida! Use o formato DD/MM/AAAA.")
                 return
 
             if any(meta.data_vencimento == data for meta in self.__controlador_sistema.controlador_usuario.usuario.metas):
-                print(f"Já existe uma meta com data de vencimento '{data}'.")
+                self.__tela_meta.mostrar_erro(f"Já existe uma meta com vencimento '{data}'.")
                 return
 
             nova_meta = Meta(valor, data)
             self.__controlador_sistema.controlador_usuario.usuario.metas.append(nova_meta)
-            print("Meta cadastrada com sucesso!")
+            self.__tela_meta.mostrar_mensagem("Meta cadastrada com sucesso!")
 
-        except ValueError:
-            print("Erro: Valor inválido informado.")
-        except TypeError:
-            print("Erro: Tipo de dado incorreto.")
         except Exception as e:
-            print(f"Ocorreu um erro ao adicionar a meta: {str(e)}")
-
+            self.__tela_meta.mostrar_erro(f"Erro ao adicionar meta: {e}")
 
     def lista_meta_string(self) -> List[str]:
-        return [f"Objetivo: R${meta.valor_objetivo:.2f}, Vencimento: {meta.data_vencimento.strftime('%d/%m/%Y')}" for meta in self.__controlador_sistema.controlador_usuario.usuario.metas]
-
+        return [
+            f"Objetivo: R${m.valor_objetivo:.2f}, Vencimento: {m.data_vencimento.strftime('%d/%m/%Y')}"
+            for m in self.__controlador_sistema.controlador_usuario.usuario.metas
+        ]
 
     def excluir_meta(self):
-        if not self.__controlador_sistema.controlador_usuario.usuario.metas:
-            print("Não há metas para excluir.")
+        metas = self.__controlador_sistema.controlador_usuario.usuario.metas
+
+        if not metas:
+            self.__tela_meta.mostrar_erro("Nenhuma meta para excluir.")
             return
 
         self.__tela_meta.mostrar_metas(self.lista_meta_string())
-        try:
-            indice = int(input("Digite o número da meta que deseja excluir: "))
-            if 0 <= indice < len(self.__controlador_sistema.controlador_usuario.usuario.metas):
-                removida = self.__controlador_sistema.controlador_usuario.usuario.metas.pop(indice)
-                print(f"Meta com valor R$ {removida.valor_objetivo:.2f} excluída com sucesso.")
-            else:
-                print("Índice inválido.")
-        except ValueError:
-            print("Por favor, digite um número válido.")
+        indice = self.__tela_meta.pedir_indice("Digite o número da meta que deseja excluir: ")
+
+        if 0 <= indice < len(metas):
+            removida = metas.pop(indice)
+            self.__tela_meta.mostrar_mensagem(f"Meta com valor R$ {removida.valor_objetivo:.2f} excluída.")
+        else:
+            self.__tela_meta.mostrar_erro("Índice inválido.")

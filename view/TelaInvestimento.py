@@ -1,97 +1,77 @@
+import PySimpleGUI as sg
 from typing import List
 from util.enums import TipoInvestimento
 from model.ativo_financeiro import AtivoFinanceiro
 
 class TelaInvestimento:
-    def __init__(self):
-        ...
-
     def mostrar_tela_inicial(self) -> str:
-        print("-------- Opções em Investimento --------")
-        print("(1) Cadastrar novo Investimento")
-        print("(2) Listar Investimentos")
-        print("(3) Mostrar Saldo")
-        print("(4) Excluir Investimento")
-        print("(5) Voltar para o Menu Principal")
-        return input("Escolha uma opção: ")
+        layout = [
+            [sg.Text('-------- Opções em Investimento --------')],
+            [sg.Button('Cadastrar novo Investimento', key='1')],
+            [sg.Button('Listar Investimentos', key='2')],
+            [sg.Button('Mostrar Saldo', key='3')],
+            [sg.Button('Excluir Investimento', key='4')],
+            [sg.Button('Voltar', key='5')]
+        ]
+        window = sg.Window('Investimento', layout)
+        evento, _ = window.read()
+        window.close()
+        return evento
 
-    def mostrar_cadastrar_novo_investimento(self, ativos_disponiveis: List[AtivoFinanceiro]) -> tuple[
-        AtivoFinanceiro, TipoInvestimento, float, int, int]:
-        print("-------- Insira novo Investimento --------")
+    def mostrar_cadastrar_novo_investimento(self, ativos_disponiveis: List[AtivoFinanceiro]):
+        nomes_ativos = [a.nome for a in ativos_disponiveis]
+        tipos_investimento = [t.name for t in TipoInvestimento]
 
-        while True:
-            print("Ativos Financeiros disponíveis:")
-            for indice, ativo in enumerate(ativos_disponiveis):
-                print(f"({indice}) - {ativo.nome}")
+        layout = [
+            [sg.Text('Ativo:'), sg.Combo(nomes_ativos, key='ativo')],
+            [sg.Text('Tipo de Investimento:'), sg.Combo(tipos_investimento, key='tipo')],
+            [sg.Text('Valor:'), sg.Input(key='valor')],
+            [sg.Text('Mês:'), sg.Input(key='mes')],
+            [sg.Text('Ano:'), sg.Input(key='ano')],
+            [sg.Button('Confirmar'), sg.Button('Cancelar')]
+        ]
 
+        window = sg.Window('Cadastrar Investimento', layout)
+        evento, valores = window.read()
+        window.close()
+
+        if evento == 'Confirmar':
             try:
-                ativo_por_indice = int(input("Escolha o ativo: "))
-                if 0 <= ativo_por_indice < len(ativos_disponiveis):
-                    ativo = ativos_disponiveis[ativo_por_indice]
-                    print(f"Você escolheu: {ativo.nome}")
-                    break
-                else:
-                    print("Operação não reconhecida, por favor digite uma opção válida")
-            except ValueError:
-                print("Operação não reconhecida, por favor digite uma opção válida")
+                ativo = ativos_disponiveis[nomes_ativos.index(valores['ativo'])]
+                tipo = TipoInvestimento[valores['tipo']]
+                valor = float(valores['valor'])
+                mes = int(valores['mes'])
+                ano = int(valores['ano'])
+                return ativo, tipo, valor, mes, ano
+            except Exception as e:
+                self.mostrar_erro(f'Erro ao cadastrar investimento: {e}')
+        return None
 
-        while True:
-            print("Tipos disponíveis:")
-            for indice, tipo in enumerate(TipoInvestimento):
-                print(f"({indice}) - {tipo.name}")
-            try:
-                tipo_por_indice = int(input("Escolha o tipo de investimento: "))
-                if 0 <= tipo_por_indice < len(TipoInvestimento):
-                    tipo = list(TipoInvestimento)[tipo_por_indice]
-                    print(f"Você escolheu: {tipo.name}")
-                    break
-                else:
-                    print("Operação não reconhecida, por favor digite uma opção válida")
-            except ValueError:
-                print("Operação não reconhecida, por favor digite uma opção válida")
-
-        while True:
-            try:
-                valor = float(input("Insira o valor: "))
-                if valor <= 0:
-                    print("O valor deve ser maior que zero.")
-                else:
-                    break
-            except ValueError:
-                print("Valor inválido. Digite um número.")
-
-        while True:
-            try:
-                mes = int(input("Insira o mês de referência (1 a 12): "))
-                if 1 <= mes <= 12:
-                    break
-                else:
-                    print("Mês inválido. Digite um número entre 1 e 12.")
-            except ValueError:
-                print("Valor inválido. Digite um número inteiro.")
-
-        while True:
-            try:
-                ano = int(input("Insira o ano de referência (2000 a 2100): "))
-                if 2000 <= ano <= 2100:
-                    break
-                else:
-                    print("Ano inválido. Digite um número entre 2000 e 2100.")
-            except ValueError:
-                print("Valor inválido. Digite um número inteiro.")
-
-        return ativo, tipo, valor, mes, ano
+    def mostrar_investimentos(self, investimentos: List[str]):
+        investimentos_numerados = [
+            f"{index} - {investimento}" for index, investimento in enumerate(investimentos)
+        ]
+        sg.popup_scrolled('-------- Investimentos --------', '\n'.join(investimentos_numerados))
 
     def mostrar_saldo(self, saldo: float):
-        print("-------- Saldo --------")
-        print(f"Saldo atual: R$ {saldo:.2f}")
+        sg.popup(f'Saldo atual: R$ {saldo:.2f}')
 
+    def selecionar_investimento_para_excluir(self, investimentos: List[str]) -> int:
+        layout = [[sg.Text('Selecione o investimento para excluir:')]]
+        for index, investimento in enumerate(investimentos):
+            layout.append([sg.Button(f"{index} - {investimento}", key=str(index))])
+        layout.append([sg.Button('Cancelar')])
 
-    def mostrar_investimentos(self, investimentos: List[str]) -> None:
-        print("-------- Investimentos --------")
+        window = sg.Window('Excluir Investimento', layout)
+        evento, _ = window.read()
+        window.close()
 
-        if not investimentos:
-            print("Nenhum investimento cadastrado.")
+        if evento and evento.isdigit():
+            return int(evento)
+        return -1
 
-        for indice, investimento in enumerate(investimentos):
-            print(f"Investimento({indice}) - {investimento}")
+    def mostrar_mensagem(self, mensagem: str):
+        sg.popup(mensagem)
+
+    def mostrar_erro(self, mensagem: str):
+        sg.popup_error(f'ERRO: {mensagem}')
