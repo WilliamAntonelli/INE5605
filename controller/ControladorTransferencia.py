@@ -2,6 +2,7 @@ from view.TelaTransferencia import TelaTransferencia
 from exceptions.InvalidInputException import InvalidInputException
 from typing import List
 from exceptions.DataNotFoundException import DataNotFoundException
+from DAOs.TransferenciaDAO import TransferenciaDAO
 from util.enums import Parentesco
 
 class ControladorTransferencia:
@@ -10,6 +11,7 @@ class ControladorTransferencia:
 
         self.__tela_transferencia = TelaTransferencia()
         self.__controlador_sistema = controlador_sistema
+        self.__dao = TransferenciaDAO()
 
     def executar(self):
         self.tela_inicial()
@@ -84,7 +86,8 @@ class ControladorTransferencia:
                    return
                
 
-               self.__controlador_sistema.controlador_usuario.adicionar_transferencia(index_familiar_escolhido, valor, mes, ano)
+               nova_transferencia = self.__controlador_sistema.controlador_usuario.adicionar_transferencia(index_familiar_escolhido, valor, mes, ano)
+               self.__dao.add(self.__dao.generate_primery_key(), nova_transferencia)
                return
                
             except (ValueError, InvalidInputException) as e:

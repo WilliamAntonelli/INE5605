@@ -10,6 +10,8 @@ class Usuario(Pessoa):
     def __init__(self, nome, profissao, idade, genero, email, senha, renda):
 
         super().__init__(nome, profissao, idade, genero)
+
+        self.__id = None
         self.__email = email
         self.__senha = senha
         self.__renda = renda
@@ -49,6 +51,15 @@ class Usuario(Pessoa):
             raise InvalidInputException("Renda inválida, coloque uma renda válida")
         
         self.__renda = renda
+
+    @property
+    def id(self):
+        return self.__id
+
+    @id.setter
+    def id(self, _id: int):
+        if self.__id is not None:
+            self.__id = _id
 
     @property
     def familiares(self):
@@ -119,6 +130,7 @@ class Usuario(Pessoa):
         if isinstance(familiar, Familiar):
             transferencia = Transferencia(valor, self, familiar, mes, ano)
             self.__transferencias.append(transferencia)
+            return transferencia
         else:
             raise Exception("Familiar inválida, coloque um familiar válido")
         

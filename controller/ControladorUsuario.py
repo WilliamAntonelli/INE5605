@@ -6,6 +6,7 @@ from model.usuario import Usuario
 from util.enums import Genero
 from view.TelaUsuario import TelaUusuario
 from exceptions.InvalidInputException import InvalidInputException
+from DAOs.UsuarioDAO import UsuarioDAO
 
 class ControladorUsuario:
 
@@ -13,6 +14,7 @@ class ControladorUsuario:
         self.__usuario = None
         self.__tela_usuario = TelaUusuario()
         self.__controlador_sistema = controlador_sistema
+        self.__usuario_dao = UsuarioDAO()
 
     
     @property
@@ -115,6 +117,7 @@ class ControladorUsuario:
                 genero = Genero.get_by_codigo(novo_usuario["genero"])
                 self.__usuario = Usuario(novo_usuario["nome"], novo_usuario["profissao"], novo_usuario["idade"], genero, novo_usuario["email"], 
                                          novo_usuario["senha"], novo_usuario["renda"])
+                self.__usuario_dao.add(self.__usuario_dao.generate_primery_key(), self.__usuario)
                 
             except (ValueError, InvalidInputException):
                 print("Dados do usuário não inválidos, por favor coloque as informações de acordo com o requerido")
@@ -127,4 +130,4 @@ class ControladorUsuario:
     def adicionar_transferencia(self, index_familiar, valor, mes, ano):
 
         familiar = self.__controlador_sistema.controlador_familiar.get_familiar_by_index(index_familiar)
-        self.__usuario.adicionar_transferencia(valor, familiar, mes, ano)
+        return self.__usuario.adicionar_transferencia(valor, familiar, mes, ano)

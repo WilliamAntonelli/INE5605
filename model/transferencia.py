@@ -5,6 +5,8 @@ from exceptions.InvalidInputException import InvalidInputException
 
 class Transferencia:
     def __init__(self, valor: float, usuario: Usuario, familiar: Familiar, mes, ano):
+        
+        self.__id = None
         self.__valor = 0.0
         self.__usuario = None
         self.__familiar = None
@@ -60,6 +62,15 @@ class Transferencia:
     @property
     def ano(self):
         return self.__ano
+
+    @property
+    def id(self):
+        return self.__id
+
+    @id.setter
+    def id(self, _id: int):
+        if self.__id is not None:
+            self.__id = _id
     
     def set_data(self, mes: int, ano: int):
 

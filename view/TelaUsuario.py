@@ -1,66 +1,97 @@
-from typing import List
+import PySimpleGUI as sg
 from model.usuario import Usuario
 
+
 class TelaUusuario:
-
     def __init__(self):
-        ...
-
+        sg.theme("DarkBlue14")  # Uma base escura com contraste suave
 
     def mostrar_tela_inicial(self) -> str:
-            
-            print("Escolha uma das opções desejadas")
-            print("(1) Editar dados")
-            print("(2) Ver todos os dados")
-            print("(3) Voltar")
-    
-            opcao_menu = input()
-            return opcao_menu
+        layout = [
+            [sg.Text("👤 Menu de Usuário", font=("Helvetica", 20), justification='center')],
+            [sg.Button("✏️ Editar dados", key="1", size=(25, 2), pad=10)],
+            [sg.Button("📄 Ver todos os dados", key="2", size=(25, 2), pad=10)],
+            [sg.Button("⬅️ Voltar", key="3", size=(25, 2), pad=10)],
+        ]
+        window = sg.Window("Painel de Usuário", layout, element_justification="c", finalize=True)
+        evento, _ = window.read()
+        window.close()
+        return evento
 
     def mostrar_cadastrar_novo_usuario(self) -> dict:
-        nome = input("Digite seu nome: ")
-        profissao = input("Digite sua profissão: ")
-        idade = int(input("Digite sua idade: "))
-        genero = int(input("Digite 1 para homen e 2 para mulher: "))
-        email = input("Digite seu email: ")
-        senha = input("Digite sua senha: ")
-        renda = float(input("Digite sua renda: "))
-        
+        layout = [
+            [sg.Text("📝 Cadastro de Novo Usuário", font=("Helvetica", 18))],
+            [sg.Text("Nome:", size=(15, 1)), sg.Input(key="nome", size=(30, 1))],
+            [sg.Text("Profissão:", size=(15, 1)), sg.Input(key="profissao", size=(30, 1))],
+            [sg.Text("Idade:", size=(15, 1)), sg.Input(key="idade", size=(30, 1))],
+            [sg.Text("Gênero:", size=(15, 1)),
+             sg.Combo(["1 - Homem", "2 - Mulher"], key="genero", size=(28, 1))],
+            [sg.Text("Email:", size=(15, 1)), sg.Input(key="email", size=(30, 1))],
+            [sg.Text("Senha:", size=(15, 1)), sg.Input(key="senha", password_char="*", size=(30, 1))],
+            [sg.Text("Renda:", size=(15, 1)), sg.Input(key="renda", size=(30, 1))],
+            [sg.Button("💾 Cadastrar", size=(20, 2), pad=(0, 15))],
+        ]
 
-        novo_usuario = {
-            "nome": nome,
-            "profissao": profissao,
-            "idade": idade,
-            "genero": genero,
-            "email": email,
-            "senha": senha,
-            "renda": renda
-        }
+        window = sg.Window("Cadastro", layout, element_justification="left", finalize=True)
+        evento, valores = window.read()
+        window.close()
+
+        try:
+            novo_usuario = {
+                "nome": valores["nome"],
+                "profissao": valores["profissao"],
+                "idade": int(valores["idade"]),
+                "genero": 1 if "1" in valores["genero"] else 2,
+                "email": valores["email"],
+                "senha": valores["senha"],
+                "renda": float(valores["renda"])
+            }
+        except (ValueError, TypeError):
+            sg.popup_error("❌ Erro nos dados fornecidos. Verifique os campos.")
+            return {}
+
         return novo_usuario
 
     def mostrar_informacoes(self, usuario_dict: dict) -> None:
-        print("-------- Dados do usuário ----------")
-        for key in usuario_dict:
-            print(f"{key}: {usuario_dict[key]}")
+        texto = "\n".join([f"{chave.title()}: {valor}" for chave, valor in usuario_dict.items()])
+        layout = [
+            [sg.Text("📄 Dados do Usuário", font=("Helvetica", 18))],
+            [sg.Multiline(texto, size=(50, 12), disabled=True, font=("Courier", 12))],
+            [sg.Button("❎ Fechar", size=(20, 2))],
+        ]
+        window = sg.Window("Dados", layout, element_justification="center", finalize=True)
+        window.read()
+        window.close()
 
+    def mostrar_informacoes_edit(self) -> tuple:
+        campos = {
+            "1": "Nome",
+            "2": "Profissão",
+            "3": "Idade",
+            "4": "Gênero",
+            "5": "Email",
+            "6": "Senha",
+            "7": "Renda",
+            "8": "Cancelar edição"
+        }
 
-    def mostrar_informacoes_edit(self) -> None:
+        layout = [
+            [sg.Text("🛠️ Edição de Dados", font=("Helvetica", 18))],
+            [sg.Text("Escolha o campo:", size=(15, 1)),
+             sg.Combo(list(campos.values()), key="campo", size=(30, 1))],
+            [sg.Text("Novo valor:", size=(15, 1)), sg.Input(key="novo_valor", size=(30, 1))],
+            [sg.Button("✅ Confirmar", size=(20, 2))],
+        ]
 
-        print("-------- Qual dados você deseja alterar ? ----------")
-        print("(1) Nome: ")
-        print("(2) Profissão: ")
-        print("(3) Idade: ")
-        print("(4) Gênero: ")
-        print("(5) email: ")
-        print("(6) Senha: ")
-        print("(7) Renda: ")
-        print("(8) Cancelar edição")
-        
-        opcao_menu = input("Qual o campo você deseja alterar ? ")
+        window = sg.Window("Editar Usuário", layout, finalize=True)
+        evento, valores = window.read()
+        window.close()
 
-        if int(opcao_menu) == 8:
-             return opcao_menu, None
-        
-        novo_campo = input("Digite o novo valor: ")
-        return opcao_menu, novo_campo
-        
+        if not valores["campo"]:
+            return "8", None
+
+        for k, v in campos.items():
+            if v == valores["campo"]:
+                if k == "8":
+                    return k, None
+                return k, valores["novo_valor"]
