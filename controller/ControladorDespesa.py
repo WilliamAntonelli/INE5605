@@ -8,6 +8,7 @@ from util.enums import TipoDespesa, TipoPagamento
 class ControladorDespesa:
     def __init__(self, controlador_categoria, controlador_sistema):
         self.__controlador_sistema = controlador_sistema
+        self.__despesas = []
         self.__tela_despesa = TelaDespesa()
         self.__categorias = controlador_categoria
 
@@ -49,11 +50,11 @@ class ControladorDespesa:
 
         tipo_despesa, categoria, local, valor, forma, mes, ano, codigo, arquivo = dados
         nova_despesa = Despesa(tipo_despesa, categoria, local, valor, forma, mes, ano, codigo, arquivo)
-        self.__controlador_sistema.controlador_usuario.usuario.despesas.append(nova_despesa)
+        self.__despesas.append(nova_despesa)
         self.__tela_despesa.mostrar_mensagem("Despesa criada com sucesso!")
 
     def editar_despesa(self):
-        despesas = self.__controlador_sistema.controlador_usuario.usuario.despesas
+        despesas = self.__despesas
 
         if not despesas:
             self.__tela_despesa.mostrar_erro("Nenhuma despesa cadastrada.")
@@ -103,7 +104,7 @@ class ControladorDespesa:
             self.__tela_despesa.mostrar_erro(f"Erro ao editar despesa: {e}")
 
     def excluir_despesa(self):
-        despesas = self.__controlador_sistema.controlador_usuario.usuario.despesas
+        despesas = self.__despesas
 
         if not despesas:
             self.__tela_despesa.mostrar_erro("Nenhuma despesa cadastrada.")
@@ -120,7 +121,7 @@ class ControladorDespesa:
     def listar_despesas_por_mes(self):
         mes, ano = self.__tela_despesa.mostrar_despesas_mes_ano()
         despesas_filtradas = [
-            d for d in self.__controlador_sistema.controlador_usuario.usuario.despesas
+            d for d in self.__despesas
             if d.mes == mes and d.ano == ano
         ]
 
@@ -132,7 +133,7 @@ class ControladorDespesa:
 
     def lista_despesa_string(self, despesas: List = None) -> List[str]:
         if despesas is None:
-            despesas = self.__controlador_sistema.controlador_usuario.usuario.despesas
+            despesas = self.__despesas
 
         return [
             f"{d.tipo_despesa.name} | {d.categoria.nome} | {d.local} | R$ {d.valor:.2f} | "
@@ -153,13 +154,13 @@ class ControladorDespesa:
 
     def total_por_categoria(self):
         totais = {}
-        for despesa in self.__controlador_sistema.controlador_usuario.usuario.despesas:
+        for despesa in self.__despesas:
             nome_categoria = despesa.categoria.nome
             totais[nome_categoria] = totais.get(nome_categoria, 0) + despesa.valor
         self.__tela_despesa.mostrar_relatorio_total_por_categoria(totais)
 
     def estatisticas_despesas(self):
-        despesas = self.__controlador_sistema.controlador_usuario.usuario.despesas
+        despesas = self.__despesas
         if not despesas:
             self.__tela_despesa.mostrar_erro("Nenhuma despesa cadastrada.")
             return

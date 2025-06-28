@@ -5,6 +5,7 @@ from datetime import datetime
 
 class ControladorMeta:
     def __init__(self, controlador_sistema):
+        self.__metas = []
         self.__controlador_sistema = controlador_sistema
         self.__tela_meta = TelaMeta()
 
@@ -50,7 +51,7 @@ class ControladorMeta:
                 return
 
             nova_meta = Meta(valor, data)
-            self.__controlador_sistema.controlador_usuario.usuario.metas.append(nova_meta)
+            self.__metas.append(nova_meta)
             self.__tela_meta.mostrar_mensagem("Meta cadastrada com sucesso!")
 
         except Exception as e:
@@ -59,11 +60,11 @@ class ControladorMeta:
     def lista_meta_string(self) -> List[str]:
         return [
             f"Objetivo: R${m.valor_objetivo:.2f}, Vencimento: {m.data_vencimento.strftime('%d/%m/%Y')}"
-            for m in self.__controlador_sistema.controlador_usuario.usuario.metas
+            for m in self.__metas
         ]
 
     def excluir_meta(self):
-        metas = self.__controlador_sistema.controlador_usuario.usuario.metas
+        metas = self.__metas
 
         if not metas:
             self.__tela_meta.mostrar_erro("Nenhuma meta para excluir.")

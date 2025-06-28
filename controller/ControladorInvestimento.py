@@ -7,6 +7,7 @@ from controller.ControladorUsuario import ControladorUsuario
 class ControladorInvestimento:
     def __init__(self, controlador_ativo_financeiro, controlador_sistema):
         self.__controlador_sistema = controlador_sistema
+        self.__investimentos = []
         self.__tela_investimento = TelaInvestimento()
         self.__ativos_financeiros = controlador_ativo_financeiro
         self.__saldo = 0
@@ -51,7 +52,7 @@ class ControladorInvestimento:
             ativo, tipo, valor, mes, ano = resultado
 
             novo_investimento = Investimento(ativo, tipo, valor, mes, ano)
-            self.__controlador_sistema.controlador_usuario.usuario.investimentos.append(novo_investimento)
+            self.__investimentos.append(novo_investimento)
 
             if tipo.name == "CREDITO":
                 self.__saldo += valor
@@ -62,7 +63,7 @@ class ControladorInvestimento:
                     self.__tela_investimento.mostrar_mensagem(f"DÉBITO registrado. Valor: R$ {valor:.2f}")
                 else:
                     self.__tela_investimento.mostrar_erro("Saldo insuficiente para realizar o débito. Débito não registrado.")
-                    self.__controlador_sistema.controlador_usuario.usuario.investimentos.pop()
+                    self.__investimentos.pop()
                     return
 
             self.__tela_investimento.mostrar_mensagem("Investimento criado com sucesso!")
@@ -73,11 +74,11 @@ class ControladorInvestimento:
     def lista_investimento_string(self) -> List[str]:
         return [
             f"{investimento.ativo.nome} | Tipo: {investimento.tipo_investimento.name} | Valor: R$ {investimento.valor:.2f} | Mês: {investimento.mes} | Ano: {investimento.ano}"
-            for investimento in self.__controlador_sistema.controlador_usuario.usuario.investimentos
+            for investimento in self.__investimentos
         ]
 
     def excluir_investimento(self):
-        investimentos = self.__controlador_sistema.controlador_usuario.usuario.investimentos
+        investimentos = self.__investimentos
 
         if not investimentos:
             self.__tela_investimento.mostrar_erro("Não há investimentos para excluir.")
