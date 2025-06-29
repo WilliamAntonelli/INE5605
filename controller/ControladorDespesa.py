@@ -4,13 +4,14 @@ from typing import List
 from controller.ControladorCategoria import ControladorCategoria
 from controller.ControladorUsuario import ControladorUsuario
 from util.enums import TipoDespesa, TipoPagamento
+from DAOs.despesa_dao import DespesaDAO
 
 class ControladorDespesa:
     def __init__(self, controlador_categoria, controlador_sistema):
         self.__controlador_sistema = controlador_sistema
-        self.__despesas = []
         self.__tela_despesa = TelaDespesa()
         self.__categorias = controlador_categoria
+        self.__despesa_DAO = DespesaDAO()
 
     def executar(self):
         self.tela_inicial()
@@ -50,18 +51,18 @@ class ControladorDespesa:
 
         tipo_despesa, categoria, local, valor, forma, mes, ano, codigo, arquivo = dados
         nova_despesa = Despesa(tipo_despesa, categoria, local, valor, forma, mes, ano, codigo, arquivo)
-        self.__despesas.append(nova_despesa)
+        self.__despesa_DAO.add(nova_despesa)
         self.__tela_despesa.mostrar_mensagem("Despesa criada com sucesso!")
 
     def editar_despesa(self):
-        despesas = self.__despesas
+        despesas = list(self.__despesa_DAO.get_all())
 
         if not despesas:
             self.__tela_despesa.mostrar_erro("Nenhuma despesa cadastrada.")
             return
 
         index, campo, novo_valor = self.__tela_despesa.mostrar_informacoes_editar_despesa(
-            self.lista_despesa_string(), despesas, self.__categorias.get_categorias()
+            self.lista_despesa_string(despesas), despesas, self.__categorias.get_categorias()
         )
 
         if index is None:
@@ -98,22 +99,24 @@ class ControladorDespesa:
                 case "arquivo_da_nota":
                     despesa.nota_fiscal.arquivo = novo_valor
 
+            self.__despesa_DAO.update(despesa)
             self.__tela_despesa.mostrar_mensagem("Despesa alterada com sucesso!")
 
         except Exception as e:
             self.__tela_despesa.mostrar_erro(f"Erro ao editar despesa: {e}")
 
     def excluir_despesa(self):
-        despesas = self.__despesas
+        despesas = list(self.__despesa_DAO.get_all())
 
         if not despesas:
             self.__tela_despesa.mostrar_erro("Nenhuma despesa cadastrada.")
             return
 
-        indice = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string())
+        indice = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string(despesas))
 
         if 0 <= indice < len(despesas):
-            despesas.pop(indice)
+            despesa = despesas[indice]
+            self.__despesa_DAO.remove(id(despesa))
             self.__tela_despesa.mostrar_mensagem("Despesa excluída com sucesso!")
         else:
             self.__tela_despesa.mostrar_erro("Índice inválido.")
@@ -121,7 +124,7 @@ class ControladorDespesa:
     def listar_despesas_por_mes(self):
         mes, ano = self.__tela_despesa.mostrar_despesas_mes_ano()
         despesas_filtradas = [
-            d for d in self.__despesas
+            d for d in self.__despesa_DAO.get_all()
             if d.mes == mes and d.ano == ano
         ]
 
@@ -133,7 +136,7 @@ class ControladorDespesa:
 
     def lista_despesa_string(self, despesas: List = None) -> List[str]:
         if despesas is None:
-            despesas = self.__despesas
+            despesas = list(self.__despesa_DAO.get_all())
 
         return [
             f"{d.tipo_despesa.name} | {d.categoria.nome} | {d.local} | R$ {d.valor:.2f} | "
@@ -154,13 +157,13 @@ class ControladorDespesa:
 
     def total_por_categoria(self):
         totais = {}
-        for despesa in self.__despesas:
+        for despesa in self.__despesa_DAO.get_all():
             nome_categoria = despesa.categoria.nome
             totais[nome_categoria] = totais.get(nome_categoria, 0) + despesa.valor
         self.__tela_despesa.mostrar_relatorio_total_por_categoria(totais)
 
     def estatisticas_despesas(self):
-        despesas = self.__despesas
+        despesas = list(self.__despesa_DAO.get_all())
         if not despesas:
             self.__tela_despesa.mostrar_erro("Nenhuma despesa cadastrada.")
             return
