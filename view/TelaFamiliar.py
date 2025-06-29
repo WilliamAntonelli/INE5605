@@ -1,98 +1,123 @@
+import PySimpleGUI as sg
 from util.enums import Parentesco
 from typing import List
 
-class TelaFamiliar:
 
+class TelaFamiliar:
     def __init__(self):
-        ...
+        sg.theme("DarkBlue14")
 
     def mostrar_tela_inicial(self) -> str:
-        print("-------- Opções em familiares ----------")
+        layout = [
+            [sg.Text("🏠 Menu de Familiares", font=("Helvetica", 20))],
+            [sg.Button("👨‍👩‍👧 Cadastrar novo familiar", key="1", size=(30, 2))],
+            [sg.Button("📋 Visualizar familiares", key="2", size=(30, 2))],
+            [sg.Button("✏️ Editar familiar", key="3", size=(30, 2))],
+            [sg.Button("❌ Excluir familiar", key="4", size=(30, 2))],
+            [sg.Button("⬅️ Voltar", key="5", size=(30, 2))],
+        ]
+        window = sg.Window("Painel de Familiares", layout, element_justification="c")
+        evento, _ = window.read()
+        window.close()
+        return evento
 
-        print("(1) Cadastrar novo familiar")
-        print("(2) Visualizar familiares")
-        print("(3) Editar familiar")
-        print("(4) Excluir familiar")
-        print("(5) Voltar")
-
-        opcao_menu = input()
-        return opcao_menu
-    
     def mostrar_cadastrar_novo_familiar(self) -> dict:
-        nome = input("Digite o nome do familiar: ")
-        profissao = input("Digite a profissão do familiar: ")
-        idade = input("Digite a idade do familiar: ")
-        genero = input("Digite 1 para homen e 2 para mulher, para escolher o gênero do familiar: ")
+        layout = [
+            [sg.Text("👨‍👩‍👧 Cadastro de Familiar", font=("Helvetica", 18))],
+            [sg.Text("Nome:", size=(15, 1)), sg.Input(key="nome")],
+            [sg.Text("Profissão:", size=(15, 1)), sg.Input(key="profissao")],
+            [sg.Text("Idade:", size=(15, 1)), sg.Input(key="idade")],
+            [sg.Text("Gênero:", size=(15, 1)), sg.Combo(["1 - Homem", "2 - Mulher"], key="genero")],
+            [sg.Text("Parentesco:", size=(15, 1)), sg.Combo(
+                [f"{p.codigo} - {p.descricao}" for p in Parentesco], key="parentesco")],
+            [sg.Button("💾 Cadastrar", size=(20, 2))],
+        ]
+        window = sg.Window("Cadastro Familiar", layout)
+        evento, valores = window.read()
+        window.close()
 
-        print("Digite o familiar que deseja adicionar")
-        for parentesco in Parentesco:
-            print(f"({parentesco.codigo}) - {parentesco.descricao}")
-        
-        parentesco = input()
-        
-        novo_familiar = {
-            "nome": nome,
-            "profissao": profissao,
-            "idade": idade,
-            "genero": genero,
-            "parentesco": parentesco
-        }
+        try:
+            return {
+                "nome": valores["nome"],
+                "profissao": valores["profissao"],
+                "idade": int(valores["idade"]),
+                "genero": 1 if "1" in valores["genero"] else 2,
+                "parentesco": int(valores["parentesco"].split(" - ")[0])
+            }
+        except Exception:
+            sg.popup_error("❌ Erro ao preencher os dados. Verifique os campos!")
+            return {}
 
-        return novo_familiar
-    
-    def mostrar_informacoes_edit(self, familiares: List[dict]) -> None:
+    def mostrar_informacoes_edit(self, familiares: List[dict]) -> tuple:
+        if not familiares:
+            sg.popup("⚠️ Nenhum familiar cadastrado!")
+            return "6", None
 
-        for count, familiar in enumerate(familiares):
-            print(f'({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}')
+        nomes = [f'({i}) {f["nome"]}, {f["idade"]} anos' for i, f in enumerate(familiares)]
+        layout = [
+            [sg.Text("👨‍👩‍👧 Editar Familiar", font=("Helvetica", 18))],
+            [sg.Text("Escolha o familiar:"), sg.Listbox(nomes, size=(40, len(nomes)), key="familiar")],
+            [sg.Text("Campo para editar:"), sg.Combo(
+                ["1 - Nome", "2 - Profissão", "3 - Idade", "4 - Gênero", "5 - Parentesco", "6 - Cancelar edição"],
+                key="campo")],
+            [sg.Text("Novo valor:"), sg.Input(key="novo_valor")],
+            [sg.Button("✅ Confirmar", size=(20, 2))],
+        ]
+        window = sg.Window("Editar Familiar", layout)
+        evento, valores = window.read()
+        window.close()
 
-        familiar_escolhido = int(input("Qual familiar deseja alterar ? "))
+        if not valores["familiar"] or not valores["campo"]:
+            return "6", None
 
-        print("-------- Qual dados do familiar deseja alterar ? ----------")
-        print("(1) Nome: ")
-        print("(2) Profissão: ")
-        print("(3) Idade: ")
-        print("(4) Gênero: ")
-        print("(5) Parentesco: ")
-        print("(6) Cancelar edição")
-        
-        opcao_menu = input("Qual o campo você deseja alterar ? ")
+        indice = int(valores["familiar"][0].split(")")[0][1:])
+        campo = valores["campo"].split(" - ")[0]
 
-        if int(opcao_menu) == 8:
-             return opcao_menu, None
-        elif int(opcao_menu) == 4:
-            print("Digite 1 para homen e 2 para mulher, para escolher o gênero do familiar: ")
-        elif int(opcao_menu) == 5:
-            for parentesco in Parentesco:
-                print(f"({parentesco.codigo}) - {parentesco.descricao}")
-        
-        novo_campo = input("Digite o novo valor: ")
-        return familiar_escolhido, opcao_menu, novo_campo
-    
-    def mostrar_informacoes_excluir_familiar(self, familiares: List[dict]) -> None:
+        return indice, campo, valores["novo_valor"]
 
-        if len(familiares) == 0:
-            print("Nenhum familiar cadastrado no momento\n")
-            return
+    def mostrar_informacoes_excluir_familiar(self, familiares: List[dict]) -> int:
+        if not familiares:
+            sg.popup("⚠️ Nenhum familiar cadastrado!")
+            return None
 
-        for count, familiar in enumerate(familiares):
-            print(f'({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}')
+        nomes = [f'({i}) {f["nome"]}, {f["idade"]} anos' for i, f in enumerate(familiares)]
+        nomes.append(f'({len(familiares)}) Voltar')
 
-        print(f"({len(familiares)}) Voltar")
-        print("Qual familiar deseja excluir ? ")
-        familiar_escolhido = int(input())
+        layout = [
+            [sg.Text("❌ Excluir Familiar", font=("Helvetica", 18))],
+            [sg.Text("Escolha quem deseja excluir:")],
+            [sg.Listbox(nomes, size=(40, len(nomes)), key="escolhido")],
+            [sg.Button("🗑️ Excluir", size=(20, 2))],
+        ]
+        window = sg.Window("Excluir Familiar", layout)
+        evento, valores = window.read()
+        window.close()
 
-        if familiar_escolhido == len(familiares): return
+        if not valores["escolhido"]:
+            return None
 
-        return familiar_escolhido
+        indice = int(valores["escolhido"][0].split(")")[0][1:])
+        if indice == len(familiares):
+            return None
+
+        return indice
 
     def mostrar_informacoes(self, familiares: List[dict]) -> None:
-
-        print("-------- Dados dos familiares ----------")
-
-        if len(familiares) == 0:
-            print("Nenhum usuário cadastrado no momento\n")
+        if not familiares:
+            sg.popup("⚠️ Nenhum familiar cadastrado!")
             return
-        
-        for familiar in familiares:
-            for key in familiar:
-                print(f"{key}: {familiar[key]}")
+
+        texto = ""
+        for f in familiares:
+            for chave, valor in f.items():
+                texto += f"{chave.title()}: {valor}\n"
+            texto += "\n"
+
+        layout = [
+            [sg.Text("📋 Dados dos Familiares", font=("Helvetica", 18))],
+            [sg.Multiline(texto, size=(60, 15), disabled=True, font=("Courier", 12))],
+            [sg.Button("❎ Fechar", size=(20, 2))],
+        ]
+        window = sg.Window("Visualizar Familiares", layout)
+        window.read()
+        window.close()

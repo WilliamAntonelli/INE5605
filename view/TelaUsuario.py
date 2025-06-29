@@ -4,7 +4,7 @@ from model.usuario import Usuario
 
 class TelaUusuario:
     def __init__(self):
-        sg.theme("DarkBlue14")  # Uma base escura com contraste suave
+        sg.ChangeLookAndFeel('DarkTeal4')
 
     def mostrar_tela_inicial(self) -> str:
         layout = [
@@ -13,7 +13,7 @@ class TelaUusuario:
             [sg.Button("📄 Ver todos os dados", key="2", size=(25, 2), pad=10)],
             [sg.Button("⬅️ Voltar", key="3", size=(25, 2), pad=10)],
         ]
-        window = sg.Window("Painel de Usuário", layout, element_justification="c", finalize=True)
+        window = sg.Window("Painel de Usuário", layout, element_justification="c")
         evento, _ = window.read()
         window.close()
         return evento
@@ -32,7 +32,7 @@ class TelaUusuario:
             [sg.Button("💾 Cadastrar", size=(20, 2), pad=(0, 15))],
         ]
 
-        window = sg.Window("Cadastro", layout, element_justification="left", finalize=True)
+        window = sg.Window("Cadastro", layout, element_justification="left")
         evento, valores = window.read()
         window.close()
 
@@ -59,7 +59,7 @@ class TelaUusuario:
             [sg.Multiline(texto, size=(50, 12), disabled=True, font=("Courier", 12))],
             [sg.Button("❎ Fechar", size=(20, 2))],
         ]
-        window = sg.Window("Dados", layout, element_justification="center", finalize=True)
+        window = sg.Window("Dados", layout, element_justification="center")
         window.read()
         window.close()
 
@@ -83,7 +83,7 @@ class TelaUusuario:
             [sg.Button("✅ Confirmar", size=(20, 2))],
         ]
 
-        window = sg.Window("Editar Usuário", layout, finalize=True)
+        window = sg.Window("Editar Usuário", layout)
         evento, valores = window.read()
         window.close()
 

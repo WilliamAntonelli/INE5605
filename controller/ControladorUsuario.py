@@ -104,15 +104,15 @@ class ControladorUsuario:
 
                 novo_usuario = self.__tela_usuario.mostrar_cadastrar_novo_usuario()
 
-                # novo_usuario = {
-                #     "nome": "João cabaleiro da silva",
-                #     "profissao": "Engenheiro de Software",
-                #     "idade": 30,
-                #     "email": "joao.silva@email.com",
-                #     "senha": "senhaSegura123",
-                #     "renda": 8500.00,
-                #     "genero": 1
-                # } 
+                novo_usuario = {
+                    "nome": "João cabaleiro da silva",
+                    "profissao": "Engenheiro de Software",
+                    "idade": 30,
+                    "email": "joao.silva@email.com",
+                    "senha": "senhaSegura123",
+                    "renda": 8500.00,
+                    "genero": 1
+                }
 
                 genero = Genero.get_by_codigo(novo_usuario["genero"])
                 self.__usuario = Usuario(novo_usuario["nome"], novo_usuario["profissao"], novo_usuario["idade"], genero, novo_usuario["email"], 
