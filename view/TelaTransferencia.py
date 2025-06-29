@@ -1,65 +1,109 @@
+import PySimpleGUI as sg
 from typing import List
 from util.enums import Parentesco
 
 class TelaTransferencia:
-
     def __init__(self):
-        ...
+        sg.ChangeLookAndFeel('DarkTeal4')
 
     def mostrar_tela_inicial(self) -> str:
-        print("-------- Opções em transferência ----------")
+        layout = [
+            [sg.Text("Menu de Transferências", font=("Helvetica", 20))],
+            [sg.Button("Cadastrar nova transferência", key="1", size=(30, 2), pad=10)],
+            [sg.Button("Visualizar transferências", key="2", size=(30, 2), pad=10)],
+            [sg.Button("Transferências por mês e ano", key="3", size=(30, 2), pad=10)],
+            [sg.Button("Transferências por parentesco", key="4", size=(30, 2), pad=10)],
+            [sg.Button("Voltar", key="5", size=(30, 2), pad=10)],
+        ]
+        window = sg.Window("Transferências", layout, element_justification="c")
+        evento, _ = window.read()
+        window.close()
+        return evento
 
-        print("(1) Cadastrar nova transferência")
-        print("(2) Visualizar transferências")
-        print("(3) Visualizar transferências por mês e ano")
-        print("(4) Visualizar transferências por parentesco")
-        print("(5) Voltar")
-
-        opcao_menu = input()
-        return opcao_menu
-    
     def mostrar_cadastrar_nova_tranferencia(self, familiares: List[dict]) -> set:
+        opcoes = [f'{i} - {f["nome"]}, {f["idade"]} anos' for i, f in enumerate(familiares)]
 
-        print("-------- Escolha para qual familiar você quer transferir ----------")
+        layout = [
+            [sg.Text("Escolha um familiar", font=("Helvetica", 16))],
+            [sg.Listbox(opcoes, key='familiar', size=(40, 6))],
+            [sg.Text("Valor da transferência:"), sg.Input(key='valor')],
+            [sg.Text("Mês (1-12):"), sg.Input(key='mes')],
+            [sg.Text("Ano:"), sg.Input(key='ano')],
+            [sg.Button("✅ Confirmar"), sg.Button("❌ Cancelar")]
+        ]
+        window = sg.Window("Nova Transferência", layout)
+        evento, valores = window.read()
+        window.close()
 
-        for count, familiar in enumerate(familiares):
-            print(f'({count}): nome: {familiar["nome"]}, idade: {familiar["idade"]}')
-        
-        print(f"({len(familiares)}) Voltar a tela de transferências")
-        familiar_escolhido = int(input("Para qual familiar deseja enviar ? "))
+        if evento in (sg.WIN_CLOSED, "❌ Cancelar") or not valores["familiar"]:
+            return len(familiares), None, None, None
 
-        if familiar_escolhido == len(familiares): return familiar_escolhido, None, None, None
+        index = int(valores["familiar"][0].split(" - ")[0])
+        if index == len(familiares):
+            return index, None, None, None
 
-        valor = float(input("Digite o valor que deseja transferir: "))
-        mes = int(int(input("Mês da transfêrencia (1-12): ")))
-        ano = int(input('Ano da transferência: '))
-        return familiar_escolhido, valor, mes, ano
-    
+        try:
+            valor = float(valores["valor"])
+            mes = int(valores["mes"])
+            ano = int(valores["ano"])
+            return index, valor, mes, ano
+
+        except ValueError:
+            sg.popup_error("❌ Dados inválidos!")
+            return index, None, None, None
+
     def mostrar_transferencias(self, transferencias: List[dict]) -> None:
+        texto = "\n".join([
+            f'{i} - Origem: {t["origem"]}, Destino: {t["destino"]}, Valor: R$ {t["valor"]:.2f}, Data: {t["mes"]}/{t["ano"]}'
+            for i, t in enumerate(transferencias)
+        ]) or "Nenhuma transferência encontrada."
 
-        print("-------- Suas transferências ----------")
-
-        for count, transferencia in enumerate(transferencias):
-            print(f'({count}) - Origem: {transferencia["origem"]}, destino: {transferencia["destino"]}, valor: {transferencia["valor"]}, data: {transferencia["mes"]}/{transferencia["ano"]}')
-        
-        print()
+        layout = [
+            [sg.Text("Suas Transferências", font=("Helvetica", 16))],
+            [sg.Multiline(texto, size=(60, 15), disabled=True)],
+            [sg.Button("Fechar")]
+        ]
+        window = sg.Window("Transferências", layout)
+        window.read()
+        window.close()
 
     def mostrar_filtro_mes_ano_transferencias(self) -> tuple:
+        layout = [
+            [sg.Text("Filtrar por mês e ano", font=("Helvetica", 16))],
+            [sg.Text("Mês (1-12):"), sg.Input(key='mes')],
+            [sg.Text("Ano:"), sg.Input(key='ano')],
+            [sg.Button("✅ Confirmar"), sg.Button("❌ Cancelar")]
+        ]
+        window = sg.Window("Filtro por Mês/Ano", layout)
+        evento, valores = window.read()
+        window.close()
 
-        print("-------- Seus filtros para transferências ----------")
+        if evento in (sg.WIN_CLOSED, "❌ Cancelar"):
+            return None, None
 
-        mes = int(int(input("Mês da transfêrencia (1-12): ")))
-        ano = int(input('Ano da transferência: '))
+        try:
+            return int(valores["mes"]), int(valores["ano"])
+        except ValueError:
+            sg.popup_error("❌ Dados inválidos!")
+            return None, None
 
-        return mes, ano
-    
-    def mostrar_filtro_parentesco_transferencias(self) -> tuple:
+    def mostrar_filtro_parentesco_transferencias(self) -> int:
+        layout = [
+            [sg.Text("Filtrar por Parentesco", font=("Helvetica", 16))],
+            [sg.Listbox(
+                values=[f"{p.codigo} - {p.descricao}" for p in Parentesco],
+                key='parentesco', size=(40, 6)
+            )],
+            [sg.Button("✅ Confirmar"), sg.Button("❌ Cancelar")]
+        ]
+        window = sg.Window("Filtro por Parentesco", layout)
+        evento, valores = window.read()
+        window.close()
 
+        if evento in (sg.WIN_CLOSED, "Cancelar") or not valores["parentesco"]:
+            return None
 
-        print("-------- Escolha para qual familar você deseja ver as transferências ----------")
+        return int(valores["parentesco"][0].split(" - ")[0])
 
-        for parentesco in Parentesco:
-            print(f"({parentesco.codigo}) - {parentesco.descricao}")
-        
-        parentesco = int(input("Para qual familiar deseja enviar ? "))
-        return parentesco
+    def mostrar_informacoes(self, message_error, title="Error") -> None:
+        sg.popup(message_error, title=title)

@@ -56,7 +56,11 @@ class ControladorSistema:
         return self.__controlador_transferencia
     
     def iniciar(self):
-        self.__controlador_usuario.cadastrar_usuario()
+        make_login = self.__controlador_usuario.cadastrar_usuario_or_make_login()
+
+        if not make_login:
+            return
+
         self.abre_tela()
 
     def abre_tela(self):
@@ -76,15 +80,16 @@ class ControladorSistema:
         while True:
             try:
 
-                opca_menu = self.__tela_sistema.mostrar_tela_inicial()
-                if int(opca_menu) == 9:
+                opcao_menu = self.__tela_sistema.mostrar_tela_inicial()
+
+                if opcao_menu is None or int(opcao_menu) == 9:
                     break
                 
-                controlador = dict_opcoes_para_execucao.get(int(opca_menu))
+                controlador = dict_opcoes_para_execucao.get(int(opcao_menu))
                 if controlador is None:
-                    print("Operação não reconhecida, por favor digita uma opção válida")
+                    self.__tela_sistema.mostrar_informacoes("Operação não reconhecida, por favor digita uma opção válida")
                 else:
                     controlador.executar()
 
             except ValueError:
-                print("Operação não reconhecida, por favor digita uma opção válida")
+                self.__tela_sistema.mostrar_informacoes("Operação não reconhecida, por favor digita uma opção válida")

@@ -8,10 +8,10 @@ class TelaUusuario:
 
     def mostrar_tela_inicial(self) -> str:
         layout = [
-            [sg.Text("👤 Menu de Usuário", font=("Helvetica", 20), justification='center')],
-            [sg.Button("✏️ Editar dados", key="1", size=(25, 2), pad=10)],
-            [sg.Button("📄 Ver todos os dados", key="2", size=(25, 2), pad=10)],
-            [sg.Button("⬅️ Voltar", key="3", size=(25, 2), pad=10)],
+            [sg.Text("Menu de Usuário", font=("Helvetica", 20), justification='center')],
+            [sg.Button("Editar dados", key="1", size=(25, 2), pad=10)],
+            [sg.Button("Ver todos os dados", key="2", size=(25, 2), pad=10)],
+            [sg.Button("Voltar", key="3", size=(25, 2), pad=10)],
         ]
         window = sg.Window("Painel de Usuário", layout, element_justification="c")
         evento, _ = window.read()
@@ -20,7 +20,8 @@ class TelaUusuario:
 
     def mostrar_cadastrar_novo_usuario(self) -> dict:
         layout = [
-            [sg.Text("📝 Cadastro de Novo Usuário", font=("Helvetica", 18))],
+            [sg.Text("Cadastro de Novo Usuário", font=("Helvetica", 18))],
+            [sg.Text("CPF:", size=(15, 1)), sg.Input(key="cpf", size=(30, 1))],
             [sg.Text("Nome:", size=(15, 1)), sg.Input(key="nome", size=(30, 1))],
             [sg.Text("Profissão:", size=(15, 1)), sg.Input(key="profissao", size=(30, 1))],
             [sg.Text("Idade:", size=(15, 1)), sg.Input(key="idade", size=(30, 1))],
@@ -29,7 +30,7 @@ class TelaUusuario:
             [sg.Text("Email:", size=(15, 1)), sg.Input(key="email", size=(30, 1))],
             [sg.Text("Senha:", size=(15, 1)), sg.Input(key="senha", password_char="*", size=(30, 1))],
             [sg.Text("Renda:", size=(15, 1)), sg.Input(key="renda", size=(30, 1))],
-            [sg.Button("💾 Cadastrar", size=(20, 2), pad=(0, 15))],
+            [sg.Button("Cadastrar", size=(20, 2), pad=(0, 15))],
         ]
 
         window = sg.Window("Cadastro", layout, element_justification="left")
@@ -38,6 +39,7 @@ class TelaUusuario:
 
         try:
             novo_usuario = {
+                "cpf": valores["cpf"],
                 "nome": valores["nome"],
                 "profissao": valores["profissao"],
                 "idade": int(valores["idade"]),
@@ -52,10 +54,10 @@ class TelaUusuario:
 
         return novo_usuario
 
-    def mostrar_informacoes(self, usuario_dict: dict) -> None:
+    def mostrar_informacoes_list(self, usuario_dict: dict) -> None:
         texto = "\n".join([f"{chave.title()}: {valor}" for chave, valor in usuario_dict.items()])
         layout = [
-            [sg.Text("📄 Dados do Usuário", font=("Helvetica", 18))],
+            [sg.Text("Dados do Usuário", font=("Helvetica", 18))],
             [sg.Multiline(texto, size=(50, 12), disabled=True, font=("Courier", 12))],
             [sg.Button("❎ Fechar", size=(20, 2))],
         ]
@@ -72,15 +74,14 @@ class TelaUusuario:
             "5": "Email",
             "6": "Senha",
             "7": "Renda",
-            "8": "Cancelar edição"
         }
 
         layout = [
-            [sg.Text("🛠️ Edição de Dados", font=("Helvetica", 18))],
+            [sg.Text("Edição de Dados", font=("Helvetica", 18))],
             [sg.Text("Escolha o campo:", size=(15, 1)),
              sg.Combo(list(campos.values()), key="campo", size=(30, 1))],
             [sg.Text("Novo valor:", size=(15, 1)), sg.Input(key="novo_valor", size=(30, 1))],
-            [sg.Button("✅ Confirmar", size=(20, 2))],
+            [sg.Button("Confirmar", size=(15, 2)), sg.Button("Voltar", size=(15, 2))]
         ]
 
         window = sg.Window("Editar Usuário", layout)
@@ -95,3 +96,22 @@ class TelaUusuario:
                 if k == "8":
                     return k, None
                 return k, valores["novo_valor"]
+
+    def pegar_senha(self):
+        layout = [
+            [sg.Text("Digite sua senha:")],
+            [sg.Input(password_char="*", key="senha")],
+            [sg.Button("OK"), sg.Button("Cancelar")]
+        ]
+
+        window = sg.Window("Senha de Acesso", layout)
+        evento, valores = window.read()
+        window.close()
+
+        if evento == "OK":
+            return valores["senha"]
+        else:
+            return None
+
+    def mostrar_informacoes(self, message_error, title="Error") -> None:
+        sg.popup(message_error, title=title)

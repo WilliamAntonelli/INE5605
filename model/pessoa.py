@@ -1,5 +1,5 @@
 from util.enums import Genero
-from abc import ABC
+from abc import ABC, abstractmethod
 from exceptions.InvalidInputException import InvalidInputException
 from exceptions.StringEmptyException import StringEmptyException
 from exceptions.GeneroNotFoundException import GeneroNotFoundException
@@ -7,6 +7,7 @@ from exceptions.GeneroNotFoundException import GeneroNotFoundException
 
 class Pessoa(ABC):
 
+    @abstractmethod
     def __init__(self, nome: str, profissao: str, idade: int, genero: Genero):
         self.__nome = ""
         self.__profissao = ""

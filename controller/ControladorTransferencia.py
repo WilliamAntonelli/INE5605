@@ -1,8 +1,6 @@
 from view.TelaTransferencia import TelaTransferencia
 from exceptions.InvalidInputException import InvalidInputException
-from typing import List
 from exceptions.DataNotFoundException import DataNotFoundException
-from DAOs.TransferenciaDAO import TransferenciaDAO
 from util.enums import Parentesco
 
 class ControladorTransferencia:
@@ -11,7 +9,6 @@ class ControladorTransferencia:
 
         self.__tela_transferencia = TelaTransferencia()
         self.__controlador_sistema = controlador_sistema
-        self.__dao = TransferenciaDAO()
 
     def executar(self):
         self.tela_inicial()
@@ -25,7 +22,10 @@ class ControladorTransferencia:
             try:
 
                 opcao_menu = self.__tela_transferencia.mostrar_tela_inicial()
-                
+
+                if opcao_menu is None:
+                    break
+
                 match int(opcao_menu):
                     case 1:
                         self.cadastrar_transferencia()
@@ -39,24 +39,21 @@ class ControladorTransferencia:
                         return
                     
                     case _:
-                        print("Operação não reconhecida, por favor digita uma opção válida")
+                        self.__tela_transferencia.mostrar_informacoes("Operação não reconhecida, por favor digita uma opção válida")
 
-            except (ValueError, InvalidInputException) as e:
-                print("Foi inserido algum valor inconsistente do que esperado pelo sistema")
-                print(e)
+            except ValueError as e:
+                self.__tela_transferencia.mostrar_informacoes("Foi inserido algum valor inconsistente do que esperado pelo sistema")
 
-            except DataNotFoundException as e:
-                print("Algum dado inserido não foi encontrado")
-                print(e)
+            except (InvalidInputException, DataNotFoundException) as e:
+                self.__tela_transferencia.mostrar_informacoes(str(e))
 
             except Exception as e:
-                print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
-                print(e)
+                self.__tela_transferencia.mostrar_informacoes("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
 
     def mostrar_tranferencias(self, transferencias):
 
         if len(transferencias) == 0:
-            print("Nenhuma transferência foi cadastrada")
+            self.__tela_transferencia.mostrar_informacoes("Nenhuma transferência foi cadastrada")
             return
 
         transferencia_dict = [{
@@ -77,7 +74,7 @@ class ControladorTransferencia:
                lista_familiares = self.__controlador_sistema.controlador_familiar.lista_famialiares()
 
                if len(lista_familiares) == 0:
-                    print("Nenhum familiar cadastrado no momento\n")
+                    self.__tela_transferencia.mostrar_informacoes("Nenhum familiar cadastrado no momento")
                     return
 
                index_familiar_escolhido, valor, mes, ano = self.__tela_transferencia.mostrar_cadastrar_nova_tranferencia(lista_familiares)
@@ -87,24 +84,23 @@ class ControladorTransferencia:
                
 
                nova_transferencia = self.__controlador_sistema.controlador_usuario.adicionar_transferencia(index_familiar_escolhido, valor, mes, ano)
-               self.__dao.add(self.__dao.generate_primery_key(), nova_transferencia)
                return
                
-            except (ValueError, InvalidInputException) as e:
-                print("Foi inserido algum valor inconsistente do que esperado pelo sistema")
-                print(e)
+            except ValueError as e:
+                self.__tela_transferencia.mostrar_informacoes("Foi inserido algum valor inconsistente do que esperado pelo sistema")
 
-            except DataNotFoundException as e:
-                print("Algum dado inserido não foi encontrado")
-                print(e)
+            except (InvalidInputException, DataNotFoundException) as e:
+                self.__tela_transferencia.mostrar_informacoes(str(e))
 
             except Exception as e:
-                print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
-                print(e)
+                self.__tela_transferencia.mostrar_informacoes("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
 
     def mostrar_filtro_mes_ano_transferencias(self, transferencias):
 
         mes, ano = self.__tela_transferencia.mostrar_filtro_mes_ano_transferencias()
+
+        if mes is None or ano is None:
+            return
 
         if mes < 1 or mes > 12 or ano < 2000 or ano > 2100:
             raise InvalidInputException("Data inválida, por favor coloque uma data válida")
@@ -118,7 +114,7 @@ class ControladorTransferencia:
         } for _transferencia in transferencias if _transferencia.mes == mes and _transferencia.ano == ano]
 
         if len(transferencia_dict) == 0:
-            print("Nenhuma transferência foi encontrada para esse filtro de mês e ano")
+            self.__tela_transferencia.mostrar_informacoes("Nenhuma transferência foi encontrada para esse filtro de mês e ano")
             return
     
         self.__tela_transferencia.mostrar_transferencias(transferencia_dict)
@@ -130,6 +126,10 @@ class ControladorTransferencia:
 
 
         parentesco = self.__tela_transferencia.mostrar_filtro_parentesco_transferencias()
+
+        if parentesco is None:
+            return
+
         parentesco = Parentesco.get_by_codigo(int(parentesco))
         
         transferencia_dict = [{
@@ -141,7 +141,7 @@ class ControladorTransferencia:
         } for _transferencia in transferencias if _transferencia.familiar.parentesco == parentesco]
 
         if len(transferencia_dict) == 0:
-            print("Nenhuma transferência foi encontrada para esse parente")
+            self.__tela_transferencia.mostrar_informacoes("Nenhuma transferência foi encontrada para esse parente")
             return
     
         self.__tela_transferencia.mostrar_transferencias(transferencia_dict)

@@ -1,9 +1,9 @@
 from view.TelaFamiliar import TelaFamiliar
-from model.familiar import Familiar
 from typing import List
 from util.enums import Genero, Parentesco
 from exceptions.InvalidInputException import InvalidInputException
 from exceptions.DataNotFoundException import DataNotFoundException
+from DAOs.UsuarioDAO import UsuarioDAO
 
 class ControladorFamiliar:
 
@@ -11,6 +11,7 @@ class ControladorFamiliar:
         
         self.__tela_familiar = TelaFamiliar()
         self.__controlador_sistema = controlador_sistema
+        self.__usuario_dao = UsuarioDAO()
     
     def executar(self):
         self.tela_inicial()
@@ -21,6 +22,10 @@ class ControladorFamiliar:
             try:
 
                 opcao_menu = self.__tela_familiar.mostrar_tela_inicial()
+
+                if opcao_menu is None:
+                    break
+
                 match int(opcao_menu):
                     case 1:
                         self.adicionar_familiar()
@@ -33,30 +38,32 @@ class ControladorFamiliar:
                     case 5:
                         return
                     case _:
-                        print("Operação não reconhecida, por favor digita uma opção válida")
+                        self.__tela_familiar.mostrar_informacoes_popup("Operação não reconhecida, por favor digita uma opção válida")
 
-            except (ValueError, InvalidInputException) as e:
-                print("Foi inserido algum valor inconsistente do que esperado pelo sistema")
-                print(e)
+            except ValueError as e:
+                self.__tela_familiar.mostrar_informacoes_popup("Foi inserido algum valor inconsistente do que esperado pelo sistema")
 
-            except DataNotFoundException as e:
-                print("Algum dado inserido não foi encontrado")
-                print(e)
+            except (InvalidInputException, DataNotFoundException) as e:
+                self.__tela_familiar.mostrar_informacoes_popup(str(e))
 
             except Exception as e:
-                print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
-                print(e)
+                self.__tela_familiar.mostrar_informacoes_popup("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
+
 
     def adicionar_familiar(self):
             
         novo_familiar_dict = self.__tela_familiar.mostrar_cadastrar_novo_familiar()
 
+        if novo_familiar_dict is None:
+            return
+
         int(novo_familiar_dict["genero"])
         genero = Genero.get_by_codigo(int(novo_familiar_dict["genero"]))
         parentesco = Parentesco.get_by_codigo(int(novo_familiar_dict["parentesco"]))
-        self.__controlador_sistema.controlador_usuario.usuario.adicionar_familiar(
+        familiar = self.__controlador_sistema.controlador_usuario.usuario.adicionar_familiar(
                 novo_familiar_dict["nome"], novo_familiar_dict["profissao"], int(novo_familiar_dict["idade"]), genero, parentesco
             )
+        self.__usuario_dao.update(self.__controlador_sistema.controlador_usuario.usuario.cpf, self.__controlador_sistema.controlador_usuario.usuario)
         
     def editar_familiar(self):
         while True:
@@ -72,12 +79,12 @@ class ControladorFamiliar:
                 
                 lista_familiares = self.lista_famialiares()
                 if len(lista_familiares) == 0:
-                    print("Nenhum familiar cadastrado no momento\n")
+                    self.__tela_familiar.mostrar_informacoes_popup("Nenhum familiar cadastrado no momento")
                     return
                 
                 index_familiar_escolhido, opcao_menu, novo_campo = self.__tela_familiar.mostrar_informacoes_edit(lista_familiares)
 
-                if int(opcao_menu) == 8:
+                if opcao_menu is None or int(opcao_menu) == 8:
                     return
                 
                 field = fiels_familiares_to_setters.get(int(opcao_menu))
@@ -90,19 +97,19 @@ class ControladorFamiliar:
                     novo_campo = Parentesco.get_by_codigo(int(novo_campo))
 
                 self.__controlador_sistema.controlador_usuario.usuario.editar_info_familiar(index_familiar_escolhido, field, novo_campo)
+                self.__usuario_dao.update(self.__controlador_sistema.controlador_usuario.usuario.cpf,
+                                         self.__controlador_sistema.controlador_usuario.usuario)
                 return
 
-            except (ValueError, InvalidInputException) as e:
-                print("Foi inserido algum valor inconsistente do que esperado pelo sistema")
-                print(e)
+            except ValueError as e:
+                self.__tela_familiar.mostrar_informacoes_popup("Foi inserido algum valor inconsistente do que esperado pelo sistema")
 
-            except DataNotFoundException as e:
-                print("Algum dado inserido não foi encontrado")
-                print(e)
+            except (InvalidInputException, DataNotFoundException) as e:
+                self.__tela_familiar.mostrar_informacoes_popup(str(e))
 
             except Exception as e:
-                print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
-                print(e)
+                self.__tela_familiar.mostrar_informacoes_popup("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
+
 
     def excluir_familiar(self):
 
@@ -116,19 +123,18 @@ class ControladorFamiliar:
                     return
 
                 self.__controlador_sistema.controlador_usuario.usuario.excluir_familiar_by_index(index_familiar_escolhido)
+                self.__usuario_dao.update(self.__controlador_sistema.controlador_usuario.usuario.cpf,
+                                         self.__controlador_sistema.controlador_usuario.usuario)
                 return
 
-            except (ValueError, InvalidInputException) as e:
-                print("Foi inserido algum valor inconsistente do que esperado pelo sistema")
-                print(e)
+            except ValueError as e:
+                self.__tela_familiar.mostrar_informacoes_popup("Foi inserido algum valor inconsistente do que esperado pelo sistema")
 
-            except DataNotFoundException as e:
-                print("Algum dado inserido não foi encontrado")
-                print(e)
+            except (InvalidInputException, DataNotFoundException) as e:
+                self.__tela_familiar.mostrar_informacoes_popup(str(e))
 
             except Exception as e:
-                print("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
-                print(e)
+                self.__tela_familiar.mostrar_informacoes_popup("Algo inesperado durante a execução do programa, consulte o admnistrador do sistema")
 
     def get_familiar_by_index(self, index_familiar):
 

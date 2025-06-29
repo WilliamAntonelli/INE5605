@@ -7,27 +7,23 @@ class UsuarioDAO(DAO):
     def __init__(self):
         super().__init__('usuario.pkl')
 
-    def add(self, key: int, usuario: Usuario):
+    def add(self, key, usuario: Usuario):
         if usuario is not None and isinstance(usuario, Usuario):
             super().add(key, usuario)
 
-    def update(self, key: int, usuario: Usuario):
-        if usuario is not None and isinstance(usuario, Usuario) and isinstance(key, int):
+    def update(self, key, usuario: Usuario):
+        if usuario is not None and isinstance(usuario, Usuario):
             super().update(key, usuario)
 
-    def get(self, key:int):
-        if isinstance(key, int):
-            return super().get(key)
+    def get(self, key):
+        return super().get(key)
+
+    def get_current_user(self):
+
+        user = super().get_all()
+        if len(user) > 0:
+            return list(user)[0]
+        return None
 
     def remove(self, key: int):
-        if(isinstance(key, int)):
-            return super().remove(key)
-
-    def generate_primery_key(self) -> int:
-
-        usuarios = [usuario.id for usuario in super().get_all()]
-
-        if len(usuarios) == 0:
-            return 1
-
-        return max(usuarios) + 1
+        return super().remove(key)

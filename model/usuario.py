@@ -7,11 +7,12 @@ from exceptions.InvalidInputException import InvalidInputException
 
 class Usuario(Pessoa):
 
-    def __init__(self, nome, profissao, idade, genero, email, senha, renda):
+    def __init__(self, cpf, nome, profissao, idade, genero, email, senha, renda):
 
         super().__init__(nome, profissao, idade, genero)
 
-        self.__id = None
+        self.__cpf = None
+        self.cpf = cpf
         self.__email = email
         self.__senha = senha
         self.__renda = renda
@@ -22,6 +23,14 @@ class Usuario(Pessoa):
         self.__despesas = []
         self.__transferencias = []
         self.__investimentos = []
+
+    @property
+    def cpf(self):
+        return self.__cpf
+
+    @cpf.setter
+    def cpf(self, cpf):
+        self.__cpf = cpf
 
     @property
     def email(self):
@@ -53,15 +62,6 @@ class Usuario(Pessoa):
         self.__renda = renda
 
     @property
-    def id(self):
-        return self.__id
-
-    @id.setter
-    def id(self, _id: int):
-        if self.__id is not None:
-            self.__id = _id
-
-    @property
     def familiares(self):
         return self.__familiares
     
@@ -77,7 +77,7 @@ class Usuario(Pessoa):
         for count, familiar_ in enumerate(self.__familiares):
             if count == index_familiar_escolhido:
                 setattr(familiar_, field, novo_valor)
-                return
+                return familiar_
             
         raise InvalidInputException("Familiar não cadastrado em usuário")
             
@@ -87,7 +87,11 @@ class Usuario(Pessoa):
 
 
     def excluir_familiar_by_index(self, index):
+
+
+        familiar = self.__familiares[index]
         self.__familiares.pop(index)
+        return familiar
     
 
     @property
