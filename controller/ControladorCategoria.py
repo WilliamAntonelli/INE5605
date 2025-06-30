@@ -65,8 +65,8 @@ class ControladorCategoria:
             self.__tela_categoria.mostrar_informacoes("Nenhuma categoria cadastrada no momento")
             return []
         
-        return [categoria.nome for categoria in self.__categorias_dao.get_all()]
+        return [categoria.nome for categoria in list(self.__categorias_dao.get_all())]
     
 
     def get_categorias(self) -> list:
-        return self.__categorias_dao.get_all()
+        return list(self.__categorias_dao.get_all())
