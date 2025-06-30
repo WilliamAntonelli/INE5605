@@ -106,17 +106,23 @@ class ControladorDespesa:
             self.__tela_despesa.mostrar_erro(f"Erro ao editar despesa: {e}")
 
     def excluir_despesa(self):
-        despesas = list(self.__despesa_DAO.get_all())
+        despesas_com_chaves = list(self.__despesa_DAO._DAO__cache.items())
 
-        if not despesas:
+        if not despesas_com_chaves:
             self.__tela_despesa.mostrar_erro("Nenhuma despesa cadastrada.")
             return
 
-        indice = self.__tela_despesa.mostrar_despesas_e_selecionar(self.lista_despesa_string(despesas))
+        lista_str = [
+            f"{d.tipo_despesa.name} | {d.categoria.nome} | {d.local} | R$ {d.valor:.2f} | "
+            f"{d.tipo_pagamento.name} | Mês: {d.mes} | Ano: {d.ano} | Nota Fiscal: {d.nota_fiscal.codigo} | {d.nota_fiscal.arquivo}"
+            for _, d in despesas_com_chaves
+        ]
 
-        if 0 <= indice < len(despesas):
-            despesa = despesas[indice]
-            self.__despesa_DAO.remove(id(despesa))
+        indice = self.__tela_despesa.mostrar_despesas_e_selecionar(lista_str)
+
+        if 0 <= indice < len(despesas_com_chaves):
+            chave_para_remover = despesas_com_chaves[indice][0]
+            self.__despesa_DAO.remove(chave_para_remover)
             self.__tela_despesa.mostrar_mensagem("Despesa excluída com sucesso!")
         else:
             self.__tela_despesa.mostrar_erro("Índice inválido.")

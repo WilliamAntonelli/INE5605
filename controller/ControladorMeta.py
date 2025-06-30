@@ -77,23 +77,24 @@ class ControladorMeta:
 
     def excluir_meta(self):
         try:
-            metas = list(self.__meta_DAO.get_all())
+            metas_com_chaves = list(self.__meta_DAO._DAO__cache.items())
 
-            if not metas:
+            if not metas_com_chaves:
                 self.__tela_meta.mostrar_erro("Nenhuma meta para excluir.")
                 return
 
             lista_strings = [
                 f"Objetivo: R${m.valor_objetivo:.2f}, Vencimento: {m.data_vencimento.strftime('%d/%m/%Y')}"
-                for m in metas
+                for _, m in metas_com_chaves
             ]
+
             self.__tela_meta.mostrar_metas(lista_strings)
             indice = self.__tela_meta.pedir_indice("Digite o número da meta que deseja excluir: ")
 
-            if 0 <= indice < len(metas):
-                meta = metas[indice]
-                self.__meta_DAO.remove(id(meta))
-                self.__tela_meta.mostrar_mensagem(f"Meta com valor R$ {meta.valor_objetivo:.2f} excluída.")
+            if 0 <= indice < len(metas_com_chaves):
+                chave_para_remover = metas_com_chaves[indice][0]
+                self.__meta_DAO.remove(chave_para_remover)
+                self.__tela_meta.mostrar_mensagem(f"Meta excluída com sucesso!")
             else:
                 self.__tela_meta.mostrar_erro("Índice inválido.")
         except Exception as e:

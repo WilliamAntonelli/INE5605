@@ -92,21 +92,24 @@ class ControladorInvestimento:
             self.__tela_investimento.mostrar_erro(f"Erro ao listar investimentos: {str(e)}")
 
     def excluir_investimento(self):
-        investimentos = list(self.__investimento_DAO.get_all())
+        investimentos_com_chaves = list(self.__investimento_DAO._DAO__cache.items())
 
-        if not investimentos:
+        if not investimentos_com_chaves:
             self.__tela_investimento.mostrar_erro("Não há investimentos para excluir.")
             return
 
         lista_strings = [
             f"{investimento.ativo.nome} | Tipo: {investimento.tipo_investimento.name} | Valor: R$ {investimento.valor:.2f} | Mês: {investimento.mes} | Ano: {investimento.ano}"
-            for investimento in investimentos
+            for _, investimento in investimentos_com_chaves
         ]
+
         indice = self.__tela_investimento.selecionar_investimento_para_excluir(lista_strings)
 
-        if 0 <= indice < len(investimentos):
-            investimento = investimentos[indice]
-            self.__investimento_DAO.remove(id(investimento))
+        if 0 <= indice < len(investimentos_com_chaves):
+            chave_para_remover = investimentos_com_chaves[indice][0]
+            investimento = investimentos_com_chaves[indice][1]
+
+            self.__investimento_DAO.remove(chave_para_remover)
 
             if investimento.tipo_investimento.name == "CREDITO":
                 self.__saldo -= investimento.valor
